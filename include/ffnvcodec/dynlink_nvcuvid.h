@@ -35,7 +35,7 @@
 #if !defined(__NVCUVID_H__)
 #define __NVCUVID_H__
 
-#include "compat/cuda/dynlink_cuviddec.h"
+#include "dynlink_cuviddec.h"
 
 #if defined(__cplusplus)
 extern "C" {
