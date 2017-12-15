@@ -25,8 +25,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#if !defined(AV_COMPAT_DYNLINK_CUDA_H) && !defined(CUDA_VERSION)
-#define AV_COMPAT_DYNLINK_CUDA_H
+#if !defined(FFNV_DYNLINK_CUDA_H) && !defined(CUDA_VERSION)
+#define FFNV_DYNLINK_CUDA_H
 
 #include <stddef.h>
 

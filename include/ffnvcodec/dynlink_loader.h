@@ -25,8 +25,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef AV_COMPAT_CUDA_DYNLINK_LOADER_H
-#define AV_COMPAT_CUDA_DYNLINK_LOADER_H
+#ifndef FFNV_CUDA_DYNLINK_LOADER_H
+#define FFNV_CUDA_DYNLINK_LOADER_H
 
 #include <stdlib.h>
 
@@ -134,7 +134,7 @@ error:                              \
     free(*functions);                      \
     *functions = NULL;
 
-#ifdef AV_COMPAT_DYNLINK_CUDA_H
+#ifdef FFNV_DYNLINK_CUDA_H
 typedef struct CudaFunctions {
     tcuInit *cuInit;
     tcuDeviceGetCount *cuDeviceGetCount;
@@ -193,7 +193,7 @@ typedef struct NvencFunctions {
     FFNV_LIB_HANDLE lib;
 } NvencFunctions;
 
-#ifdef AV_COMPAT_DYNLINK_CUDA_H
+#ifdef FFNV_DYNLINK_CUDA_H
 static inline void cuda_free_functions(CudaFunctions **functions)
 {
     GENERIC_FREE_FUNC();
@@ -210,7 +210,7 @@ static inline void nvenc_free_functions(NvencFunctions **functions)
     GENERIC_FREE_FUNC();
 }
 
-#ifdef AV_COMPAT_DYNLINK_CUDA_H
+#ifdef FFNV_DYNLINK_CUDA_H
 static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
 {
     GENERIC_LOAD_FUNC_PREAMBLE(CudaFunctions, cuda, CUDA_LIBNAME);
