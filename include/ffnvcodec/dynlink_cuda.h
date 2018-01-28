@@ -59,6 +59,14 @@ typedef enum CUmemorytype_enum {
     CU_MEMORYTYPE_DEVICE = 2
 } CUmemorytype;
 
+typedef enum CUlimit_enum {
+    CU_LIMIT_STACK_SIZE = 0,
+    CU_LIMIT_PRINTF_FIFO_SIZE = 1,
+    CU_LIMIT_MALLOC_HEAP_SIZE = 2,
+    CU_LIMIT_DEV_RUNTIME_SYNC_DEPTH = 3,
+    CU_LIMIT_DEV_RUNTIME_PENDING_LAUNCH_COUNT = 4
+} CUlimit;
+
 typedef struct CUDA_MEMCPY2D_st {
     size_t srcXInBytes;
     size_t srcY;
@@ -86,6 +94,7 @@ typedef CUresult CUDAAPI tcuDeviceGet(CUdevice *device, int ordinal);
 typedef CUresult CUDAAPI tcuDeviceGetName(char *name, int len, CUdevice dev);
 typedef CUresult CUDAAPI tcuDeviceComputeCapability(int *major, int *minor, CUdevice dev);
 typedef CUresult CUDAAPI tcuCtxCreate_v2(CUcontext *pctx, unsigned int flags, CUdevice dev);
+typedef CUresult CUDAAPI tcuCtxSetLimit(CUlimit limit, size_t value);
 typedef CUresult CUDAAPI tcuCtxPushCurrent_v2(CUcontext *pctx);
 typedef CUresult CUDAAPI tcuCtxPopCurrent_v2(CUcontext *pctx);
 typedef CUresult CUDAAPI tcuCtxDestroy_v2(CUcontext ctx);
