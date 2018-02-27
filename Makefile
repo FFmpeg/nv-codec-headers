@@ -4,7 +4,11 @@ INSTALL = install
 SED = sed
 
 all:
+ifeq ($(OS),Windows_NT)
+	$(SED) 's#@@PREFIX@@#$(shell cygpath -m ${PREFIX})#' ffnvcodec.pc.in > ffnvcodec.pc
+else
 	$(SED) 's#@@PREFIX@@#$(PREFIX)#' ffnvcodec.pc.in > ffnvcodec.pc
+endif
 
 install: all
 	$(INSTALL) -m 0755 -d '$(DESTDIR)$(PREFIX)/include/ffnvcodec'
