@@ -1,7 +1,7 @@
 /*
  * This copyright notice applies to this header file only:
  *
- * Copyright (c) 2010-2017 NVIDIA Corporation
+ * Copyright (c) 2010-2018 NVIDIA Corporation
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,7 +28,7 @@
 /*****************************************************************************************************/
 //! \file cuviddec.h
 //! NVDECODE API provides video decoding interface to NVIDIA GPU devices.
-//! \date 2015-2017
+//! \date 2015-2018
 //! This file contains constants, structure definitions and function prototypes used for decoding.
 /*****************************************************************************************************/
 
@@ -40,6 +40,11 @@
 #define __CUVID_DEVPTR64
 #endif
 #endif
+
+#define NVDECAPI_MAJOR_VERSION 8
+#define NVDECAPI_MINOR_VERSION 1
+
+#define NVDECAPI_VERSION (NVDECAPI_MAJOR_VERSION | (NVDECAPI_MINOR_VERSION << 24))
 
 #if defined(__cplusplus)
 extern "C" {
@@ -499,7 +504,12 @@ typedef struct _CUVIDHEVCPICPARAMS
 
     unsigned char bit_depth_luma_minus8;
     unsigned char bit_depth_chroma_minus8;
-    unsigned char reserved1[14];
+    //sps/pps extension fields
+    unsigned char log2_max_transform_skip_block_size_minus2;
+    unsigned char log2_sao_offset_scale_luma;
+    unsigned char log2_sao_offset_scale_chroma;
+    unsigned char high_precision_offsets_enabled_flag;
+    unsigned char reserved1[10];
 
     // pps
     unsigned char dependent_slice_segments_enabled_flag;
@@ -776,57 +786,57 @@ typedef struct _CUVIDPROCPARAMS
 /**********************************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidGetDecoderCaps(CUVIDDECODECAPS *pdc);
 
-/********************************************************************************************************************/
+/*****************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidCreateDecoder(CUvideodecoder *phDecoder, CUVIDDECODECREATEINFO *pdci)
 //! Create the decoder object based on pdci. A handle to the created decoder is returned
-/********************************************************************************************************************/
+/*****************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidCreateDecoder(CUvideodecoder *phDecoder, CUVIDDECODECREATEINFO *pdci);
-/********************************************************************************************************************/
+
+/*****************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidDestroyDecoder(CUvideodecoder hDecoder)
-//! Destroy the decoder object.
-/********************************************************************************************************************/
+//! Destroy the decoder object
+/*****************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidDestroyDecoder(CUvideodecoder hDecoder);
 
-/********************************************************************************************************************/
+/*****************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidDecodePicture(CUvideodecoder hDecoder, CUVIDPICPARAMS *pPicParams)
 //! Decode a single picture (field or frame)
 //! Kicks off HW decoding
-/********************************************************************************************************************/
+/*****************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidDecodePicture(CUvideodecoder hDecoder, CUVIDPICPARAMS *pPicParams);
-
 
 #if !defined(__CUVID_DEVPTR64) || defined(__CUVID_INTERNAL)
 /************************************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidMapVideoFrame(CUvideodecoder hDecoder, int nPicIdx, unsigned int *pDevPtr,
-//!                                         unsigned int  *pPitch, CUVIDPROCPARAMS *pVPP);
+//!                                         unsigned int *pPitch, CUVIDPROCPARAMS *pVPP);
 //! Post-process and map video frame corresponding to nPicIdx for use in cuda. Returns cuda device pointer and associated
 //! pitch of the video frame
 /************************************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidMapVideoFrame(CUvideodecoder hDecoder, int nPicIdx,
-                                           unsigned int *pDevPtr, unsigned int *pPitch,
-                                           CUVIDPROCPARAMS *pVPP);
+                                             unsigned int *pDevPtr, unsigned int *pPitch,
+                                             CUVIDPROCPARAMS *pVPP);
 
-/********************************************************************************************************************/
+/*****************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidUnmapVideoFrame(CUvideodecoder hDecoder, unsigned int DevPtr)
 //! Unmap a previously mapped video frame
-/********************************************************************************************************************/
+/*****************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidUnmapVideoFrame(CUvideodecoder hDecoder, unsigned int DevPtr);
 #endif
 
 #if defined(_WIN64) || defined(__LP64__) || defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
-/************************************************************************************************************************/
+/****************************************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidMapVideoFrame64(CUvideodecoder hDecoder, int nPicIdx, unsigned long long *pDevPtr,
-//!                                           unsigned int *pPitch, CUVIDPROCPARAMS *pVPP);
+//!                                           unsigned int * pPitch, CUVIDPROCPARAMS *pVPP);
 //! Post-process and map video frame corresponding to nPicIdx for use in cuda. Returns cuda device pointer and associated
 //! pitch of the video frame
-/************************************************************************************************************************/
+/****************************************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidMapVideoFrame64(CUvideodecoder hDecoder, int nPicIdx, unsigned long long *pDevPtr,
-                                             unsigned int *pPitch, CUVIDPROCPARAMS *pVPP);
+                                               unsigned int *pPitch, CUVIDPROCPARAMS *pVPP);
 
-/********************************************************************************************************************/
+/**************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidUnmapVideoFrame64(CUvideodecoder hDecoder, unsigned long long DevPtr);
 //! Unmap a previously mapped video frame
-/********************************************************************************************************************/
+/**************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidUnmapVideoFrame64(CUvideodecoder hDecoder, unsigned long long DevPtr);
 
 #if defined(__CUVID_DEVPTR64) && !defined(__CUVID_INTERNAL)
