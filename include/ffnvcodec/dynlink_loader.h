@@ -152,6 +152,13 @@ typedef struct CudaFunctions {
     tcuGetErrorName *cuGetErrorName;
     tcuGetErrorString *cuGetErrorString;
 
+    tcuGLGetDevices_v2 *cuGLGetDevices;
+    tcuGraphicsGLRegisterImage *cuGraphicsGLRegisterImage;
+    tcuGraphicsUnregisterResource *cuGraphicsUnregisterResource;
+    tcuGraphicsMapResources *cuGraphicsMapResources;
+    tcuGraphicsUnmapResources *cuGraphicsUnmapResources;
+    tcuGraphicsSubResourceGetMappedArray *cuGraphicsSubResourceGetMappedArray;
+
     FFNV_LIB_HANDLE lib;
 } CudaFunctions;
 #else
@@ -231,6 +238,13 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuMemcpy2D, tcuMemcpy2D_v2, "cuMemcpy2D_v2");
     LOAD_SYMBOL(cuGetErrorName, tcuGetErrorName, "cuGetErrorName");
     LOAD_SYMBOL(cuGetErrorString, tcuGetErrorString, "cuGetErrorString");
+
+    LOAD_SYMBOL(cuGLGetDevices, tcuGLGetDevices_v2, "cuGLGetDevices_v2");
+    LOAD_SYMBOL(cuGraphicsGLRegisterImage, tcuGraphicsGLRegisterImage, "cuGraphicsGLRegisterImage");
+    LOAD_SYMBOL(cuGraphicsUnregisterResource, tcuGraphicsUnregisterResource, "cuGraphicsUnregisterResource");
+    LOAD_SYMBOL(cuGraphicsMapResources, tcuGraphicsMapResources, "cuGraphicsMapResources");
+    LOAD_SYMBOL(cuGraphicsUnmapResources, tcuGraphicsUnmapResources, "cuGraphicsUnmapResources");
+    LOAD_SYMBOL(cuGraphicsSubResourceGetMappedArray, tcuGraphicsSubResourceGetMappedArray, "cuGraphicsSubResourceGetMappedArray");
 
     GENERIC_LOAD_FUNC_FINALE(cuda);
 }

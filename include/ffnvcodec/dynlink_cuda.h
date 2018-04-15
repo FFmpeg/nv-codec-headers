@@ -56,7 +56,8 @@ typedef enum cudaError_enum {
 
 typedef enum CUmemorytype_enum {
     CU_MEMORYTYPE_HOST = 1,
-    CU_MEMORYTYPE_DEVICE = 2
+    CU_MEMORYTYPE_DEVICE = 2,
+    CU_MEMORYTYPE_ARRAY = 3
 } CUmemorytype;
 
 typedef enum CUlimit_enum {
@@ -88,6 +89,18 @@ typedef struct CUDA_MEMCPY2D_st {
     size_t Height;
 } CUDA_MEMCPY2D;
 
+typedef unsigned int GLenum;
+typedef unsigned int GLuint;
+typedef struct CUgraphicsResource_st *CUgraphicsResource;
+
+typedef enum CUGLDeviceList_enum {
+    CU_GL_DEVICE_LIST_ALL = 1,
+    CU_GL_DEVICE_LIST_CURRENT_FRAME = 2,
+    CU_GL_DEVICE_LIST_NEXT_FRAME = 3,
+} CUGLDeviceList;
+
+#define CU_GRAPHICS_REGISTER_FLAGS_WRITE_DISCARD 2
+
 typedef CUresult CUDAAPI tcuInit(unsigned int Flags);
 typedef CUresult CUDAAPI tcuDeviceGetCount(int *count);
 typedef CUresult CUDAAPI tcuDeviceGet(CUdevice *device, int ordinal);
@@ -103,5 +116,12 @@ typedef CUresult CUDAAPI tcuMemFree_v2(CUdeviceptr dptr);
 typedef CUresult CUDAAPI tcuMemcpy2D_v2(const CUDA_MEMCPY2D *pcopy);
 typedef CUresult CUDAAPI tcuGetErrorName(CUresult error, const char** pstr);
 typedef CUresult CUDAAPI tcuGetErrorString(CUresult error, const char** pstr);
+
+typedef CUresult CUDAAPI tcuGLGetDevices_v2(unsigned int* pCudaDeviceCount, CUdevice* pCudaDevices, unsigned int cudaDeviceCount, CUGLDeviceList deviceList);
+typedef CUresult CUDAAPI tcuGraphicsGLRegisterImage(CUgraphicsResource* pCudaResource, GLuint image, GLenum target, unsigned int Flags);
+typedef CUresult CUDAAPI tcuGraphicsUnregisterResource(CUgraphicsResource resource);
+typedef CUresult CUDAAPI tcuGraphicsMapResources(unsigned int count, CUgraphicsResource* resources, CUstream hStream);
+typedef CUresult CUDAAPI tcuGraphicsUnmapResources(unsigned int count, CUgraphicsResource* resources, CUstream hStream);
+typedef CUresult CUDAAPI tcuGraphicsSubResourceGetMappedArray(CUarray* pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel);
 
 #endif
