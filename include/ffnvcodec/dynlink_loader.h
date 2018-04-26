@@ -114,7 +114,7 @@
                                              \
     n##_free_functions(functions);           \
                                              \
-    f = *functions = calloc(1, sizeof(*f));  \
+    f = *functions = (T*)calloc(1, sizeof(*f));\
     if (!f)                                  \
         return -1;                           \
                                              \
