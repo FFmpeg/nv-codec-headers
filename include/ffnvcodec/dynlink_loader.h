@@ -108,16 +108,16 @@
         }                                                                     \
     } while (0)
 
-#define GENERIC_LOAD_FUNC_PREAMBLE(T, n, N)  \
-    T *f;                                    \
-    int ret;                                 \
-                                             \
-    n##_free_functions(functions);           \
-                                             \
-    f = *functions = (T*)calloc(1, sizeof(*f));\
-    if (!f)                                  \
-        return -1;                           \
-                                             \
+#define GENERIC_LOAD_FUNC_PREAMBLE(T, n, N)     \
+    T *f;                                       \
+    int ret;                                    \
+                                                \
+    n##_free_functions(functions);              \
+                                                \
+    f = *functions = (T*)calloc(1, sizeof(*f)); \
+    if (!f)                                     \
+        return -1;                              \
+                                                \
     LOAD_LIBRARY(f->lib, N);
 
 #define GENERIC_LOAD_FUNC_FINALE(n) \
