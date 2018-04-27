@@ -108,7 +108,7 @@ typedef CUresult CUDAAPI tcuDeviceGetName(char *name, int len, CUdevice dev);
 typedef CUresult CUDAAPI tcuDeviceComputeCapability(int *major, int *minor, CUdevice dev);
 typedef CUresult CUDAAPI tcuCtxCreate_v2(CUcontext *pctx, unsigned int flags, CUdevice dev);
 typedef CUresult CUDAAPI tcuCtxSetLimit(CUlimit limit, size_t value);
-typedef CUresult CUDAAPI tcuCtxPushCurrent_v2(CUcontext *pctx);
+typedef CUresult CUDAAPI tcuCtxPushCurrent_v2(CUcontext pctx);
 typedef CUresult CUDAAPI tcuCtxPopCurrent_v2(CUcontext *pctx);
 typedef CUresult CUDAAPI tcuCtxDestroy_v2(CUcontext ctx);
 typedef CUresult CUDAAPI tcuMemAlloc_v2(CUdeviceptr *dptr, size_t bytesize);
