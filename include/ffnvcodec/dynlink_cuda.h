@@ -51,7 +51,8 @@ typedef unsigned int CUdeviceptr;
 #endif
 
 typedef enum cudaError_enum {
-    CUDA_SUCCESS = 0
+    CUDA_SUCCESS = 0,
+    CUDA_ERROR_NOT_READY = 600
 } CUresult;
 
 typedef enum CUmemorytype_enum {
@@ -67,6 +68,14 @@ typedef enum CUlimit_enum {
     CU_LIMIT_DEV_RUNTIME_SYNC_DEPTH = 3,
     CU_LIMIT_DEV_RUNTIME_PENDING_LAUNCH_COUNT = 4
 } CUlimit;
+
+typedef enum CUgraphicsRegisterFlags_enum {
+    CU_GRAPHICS_REGISTER_FLAGS_NONE = 0,
+    CU_GRAPHICS_REGISTER_FLAGS_READ_ONLY = 1,
+    CU_GRAPHICS_REGISTER_FLAGS_WRITE_DISCARD = 2,
+    CU_GRAPHICS_REGISTER_FLAGS_SURFACE_LDST = 4,
+    CU_GRAPHICS_REGISTER_FLAGS_TEXTURE_GATHER = 8
+} CUgraphicsRegisterFlags;
 
 typedef struct CUDA_MEMCPY2D_st {
     size_t srcXInBytes;
@@ -99,7 +108,9 @@ typedef enum CUGLDeviceList_enum {
     CU_GL_DEVICE_LIST_NEXT_FRAME = 3,
 } CUGLDeviceList;
 
-#define CU_GRAPHICS_REGISTER_FLAGS_WRITE_DISCARD 2
+#define CU_STREAM_NON_BLOCKING 1
+
+typedef void CUDAAPI CUstreamCallback(CUstream hStream, CUresult status, void *userdata);
 
 typedef CUresult CUDAAPI tcuInit(unsigned int Flags);
 typedef CUresult CUDAAPI tcuDeviceGetCount(int *count);
@@ -114,8 +125,15 @@ typedef CUresult CUDAAPI tcuCtxDestroy_v2(CUcontext ctx);
 typedef CUresult CUDAAPI tcuMemAlloc_v2(CUdeviceptr *dptr, size_t bytesize);
 typedef CUresult CUDAAPI tcuMemFree_v2(CUdeviceptr dptr);
 typedef CUresult CUDAAPI tcuMemcpy2D_v2(const CUDA_MEMCPY2D *pcopy);
+typedef CUresult CUDAAPI tcuMemcpy2DAsync_v2(const CUDA_MEMCPY2D *pcopy, CUstream hStream);
 typedef CUresult CUDAAPI tcuGetErrorName(CUresult error, const char** pstr);
 typedef CUresult CUDAAPI tcuGetErrorString(CUresult error, const char** pstr);
+
+typedef CUresult CUDAAPI tcuStreamCreate(CUstream *phStream, unsigned int flags);
+typedef CUresult CUDAAPI tcuStreamQuery(CUstream hStream);
+typedef CUresult CUDAAPI tcuStreamSynchronize(CUstream hStream);
+typedef CUresult CUDAAPI tcuStreamDestroy_v2(CUstream hStream);
+typedef CUresult CUDAAPI tcuStreamAddCallback(CUstream hStream, CUstreamCallback *callback, void *userdata, unsigned int flags);
 
 typedef CUresult CUDAAPI tcuGLGetDevices_v2(unsigned int* pCudaDeviceCount, CUdevice* pCudaDevices, unsigned int cudaDeviceCount, CUGLDeviceList deviceList);
 typedef CUresult CUDAAPI tcuGraphicsGLRegisterImage(CUgraphicsResource* pCudaResource, GLuint image, GLenum target, unsigned int Flags);
