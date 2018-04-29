@@ -149,8 +149,15 @@ typedef struct CudaFunctions {
     tcuMemAlloc_v2 *cuMemAlloc;
     tcuMemFree_v2 *cuMemFree;
     tcuMemcpy2D_v2 *cuMemcpy2D;
+    tcuMemcpy2DAsync_v2 *cuMemcpy2DAsync;
     tcuGetErrorName *cuGetErrorName;
     tcuGetErrorString *cuGetErrorString;
+
+    tcuStreamCreate *cuStreamCreate;
+    tcuStreamQuery *cuStreamQuery;
+    tcuStreamSynchronize *cuStreamSynchronize;
+    tcuStreamDestroy_v2 *cuStreamDestroy;
+    tcuStreamAddCallback *cuStreamAddCallback;
 
     tcuGLGetDevices_v2 *cuGLGetDevices;
     tcuGraphicsGLRegisterImage *cuGraphicsGLRegisterImage;
@@ -236,8 +243,15 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuMemAlloc, tcuMemAlloc_v2, "cuMemAlloc_v2");
     LOAD_SYMBOL(cuMemFree, tcuMemFree_v2, "cuMemFree_v2");
     LOAD_SYMBOL(cuMemcpy2D, tcuMemcpy2D_v2, "cuMemcpy2D_v2");
+    LOAD_SYMBOL(cuMemcpy2DAsync, tcuMemcpy2DAsync_v2, "cuMemcpy2DAsync_v2");
     LOAD_SYMBOL(cuGetErrorName, tcuGetErrorName, "cuGetErrorName");
     LOAD_SYMBOL(cuGetErrorString, tcuGetErrorString, "cuGetErrorString");
+
+    LOAD_SYMBOL(cuStreamCreate, tcuStreamCreate, "cuStreamCreate");
+    LOAD_SYMBOL(cuStreamQuery, tcuStreamQuery, "cuStreamQuery");
+    LOAD_SYMBOL(cuStreamSynchronize, tcuStreamSynchronize, "cuStreamSynchronize");
+    LOAD_SYMBOL(cuStreamDestroy, tcuStreamDestroy_v2, "cuStreamDestroy_v2");
+    LOAD_SYMBOL(cuStreamAddCallback, tcuStreamAddCallback, "cuStreamAddCallback");
 
     LOAD_SYMBOL(cuGLGetDevices, tcuGLGetDevices_v2, "cuGLGetDevices_v2");
     LOAD_SYMBOL(cuGraphicsGLRegisterImage, tcuGraphicsGLRegisterImage, "cuGraphicsGLRegisterImage");
