@@ -49,7 +49,7 @@
 #if defined(_WIN32) || defined(__CYGWIN__)
 # define CUDA_LIBNAME "nvcuda.dll"
 # define NVCUVID_LIBNAME "nvcuvid.dll"
-# if ARCH_X86_64
+# if defined(_WIN64) || defined(__CYGWIN64__)
 #  define NVENC_LIBNAME "nvEncodeAPI64.dll"
 # else
 #  define NVENC_LIBNAME "nvEncodeAPI.dll"
