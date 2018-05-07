@@ -44,6 +44,7 @@ typedef int CUdevice;
 typedef void* CUarray;
 typedef void* CUcontext;
 typedef void* CUstream;
+typedef void* CUevent;
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
 typedef unsigned long long CUdeviceptr;
 #else
@@ -109,6 +110,8 @@ typedef enum CUGLDeviceList_enum {
 } CUGLDeviceList;
 
 #define CU_STREAM_NON_BLOCKING 1
+#define CU_EVENT_BLOCKING_SYNC 1
+#define CU_EVENT_DISABLE_TIMING 2
 
 typedef void CUDAAPI CUstreamCallback(CUstream hStream, CUresult status, void *userdata);
 
@@ -134,6 +137,11 @@ typedef CUresult CUDAAPI tcuStreamQuery(CUstream hStream);
 typedef CUresult CUDAAPI tcuStreamSynchronize(CUstream hStream);
 typedef CUresult CUDAAPI tcuStreamDestroy_v2(CUstream hStream);
 typedef CUresult CUDAAPI tcuStreamAddCallback(CUstream hStream, CUstreamCallback *callback, void *userdata, unsigned int flags);
+typedef CUresult CUDAAPI tcuEventCreate(CUevent *phEvent, unsigned int flags);
+typedef CUresult CUDAAPI tcuEventDestroy_v2(CUevent hEvent);
+typedef CUresult CUDAAPI tcuEventSynchronize(CUevent hEvent);
+typedef CUresult CUDAAPI tcuEventQuery(CUevent hEvent);
+typedef CUresult CUDAAPI tcuEventRecord(CUevent hEvent, CUstream hStream);
 
 typedef CUresult CUDAAPI tcuGLGetDevices_v2(unsigned int* pCudaDeviceCount, CUdevice* pCudaDevices, unsigned int cudaDeviceCount, CUGLDeviceList deviceList);
 typedef CUresult CUDAAPI tcuGraphicsGLRegisterImage(CUgraphicsResource* pCudaResource, GLuint image, GLenum target, unsigned int Flags);
