@@ -158,6 +158,11 @@ typedef struct CudaFunctions {
     tcuStreamSynchronize *cuStreamSynchronize;
     tcuStreamDestroy_v2 *cuStreamDestroy;
     tcuStreamAddCallback *cuStreamAddCallback;
+    tcuEventCreate *cuEventCreate;
+    tcuEventDestroy_v2 *cuEventDestroy;
+    tcuEventSynchronize *cuEventSynchronize;
+    tcuEventQuery *cuEventQuery;
+    tcuEventRecord *cuEventRecord;
 
     tcuGLGetDevices_v2 *cuGLGetDevices;
     tcuGraphicsGLRegisterImage *cuGraphicsGLRegisterImage;
@@ -252,6 +257,11 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuStreamSynchronize, tcuStreamSynchronize, "cuStreamSynchronize");
     LOAD_SYMBOL(cuStreamDestroy, tcuStreamDestroy_v2, "cuStreamDestroy_v2");
     LOAD_SYMBOL(cuStreamAddCallback, tcuStreamAddCallback, "cuStreamAddCallback");
+    LOAD_SYMBOL(cuEventCreate, tcuEventCreate, "cuEventCreate");
+    LOAD_SYMBOL(cuEventDestroy, tcuEventDestroy_v2, "cuEventDestroy_v2");
+    LOAD_SYMBOL(cuEventSynchronize, tcuEventSynchronize, "cuEventSynchronize");
+    LOAD_SYMBOL(cuEventQuery, tcuEventQuery, "cuEventQuery");
+    LOAD_SYMBOL(cuEventRecord, tcuEventRecord, "cuEventRecord");
 
     LOAD_SYMBOL(cuGLGetDevices, tcuGLGetDevices_v2, "cuGLGetDevices_v2");
     LOAD_SYMBOL(cuGraphicsGLRegisterImage, tcuGraphicsGLRegisterImage, "cuGraphicsGLRegisterImage");
