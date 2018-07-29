@@ -91,9 +91,9 @@ typedef enum cudaVideoCodec_enum {
 //! These enums are used in CUVIDDECODECREATEINFO structure
 /*********************************************************************************/
 typedef enum cudaVideoSurfaceFormat_enum {
-    cudaVideoSurfaceFormat_NV12=0,       /**< NV12 format          */
-    cudaVideoSurfaceFormat_P016=1        /**< 16 bit semiplaner format. Can be used for 10 bit(6LSB bits 0),
-                                              12 bit (4LSB bits 0) */
+    cudaVideoSurfaceFormat_NV12=0,       /**< Semi-Planar YUV [Y plane followed by interleaved UV plane]     */
+    cudaVideoSurfaceFormat_P016=1        /**< 16 bit Semi-Planar YUV [Y plane followed by interleaved UV plane].
+                                              Can be used for 10 bit(6LSB bits 0), 12 bit (4LSB bits 0)      */
 } cudaVideoSurfaceFormat;
 
 /******************************************************************************************************************/
@@ -136,6 +136,21 @@ typedef enum cudaVideoCreateFlags_enum {
 } cudaVideoCreateFlags;
 
 
+/*************************************************************************/
+//! \enum cuvidDecodeStatus
+//! Decode status enums
+//! These enums are used in CUVIDGETDECODESTATUS structure
+/*************************************************************************/
+typedef enum cuvidDecodeStatus_enum
+{
+    cuvidDecodeStatus_Invalid         = 0,   // Decode status is not valid
+    cuvidDecodeStatus_InProgress      = 1,   // Decode is in progress
+    cuvidDecodeStatus_Success         = 2,   // Decode is completed without any errors
+    // 3 to 7 enums are reserved for future use
+    cuvidDecodeStatus_Error           = 8,   // Decode is completed with an error (error is not concealed)
+    cuvidDecodeStatus_Error_Concealed = 9,   // Decode is completed with an error and error is concealed
+} cuvidDecodeStatus;
+
 /**************************************************************************************************************/
 //! \struct CUVIDDECODECAPS;
 //! This structure is used in cuvidGetDecoderCaps API
@@ -176,7 +191,9 @@ typedef struct _CUVIDDECODECREATEINFO
                                              to specific codecs(H264 rightnow), the flag will be ignored for codecs which
                                              are not supported. However decoding might fail if the flag is enabled in case
                                              of supported codecs for regular bit streams having P and/or B frames.          */
-    tcu_ulong Reserved1[3];             /**< Reserved for future use - set to zero                                          */
+    tcu_ulong ulMaxWidth;               /**< IN: Coded sequence max width in pixels used with reconfigure Decoder           */
+    tcu_ulong ulMaxHeight;              /**< IN: Coded sequence max height in pixels used with reconfigure Decoder          */
+    tcu_ulong Reserved1;                /**< Reserved for future use - set to zero                                          */
     /**
     * IN: area of the frame that should be displayed
     */
@@ -190,7 +207,7 @@ typedef struct _CUVIDDECODECREATEINFO
     cudaVideoSurfaceFormat OutputFormat;       /**< IN: cudaVideoSurfaceFormat_XXX                                     */
     cudaVideoDeinterlaceMode DeinterlaceMode;  /**< IN: cudaVideoDeinterlaceMode_XXX                                   */
     tcu_ulong ulTargetWidth;                   /**< IN: Post-processed output width (Should be aligned to 2)           */
-    tcu_ulong ulTargetHeight;                  /**< IN: Post-processed output height (Should be aligbed to 2)          */
+    tcu_ulong ulTargetHeight;                  /**< IN: Post-processed output height (Should be aligned to 2)          */
     tcu_ulong ulNumOutputSurfaces;             /**< IN: Maximum number of output surfaces simultaneously mapped        */
     CUvideoctxlock vidLock;                    /**< IN: If non-NULL, context lock used for synchronizing ownership of
                                                     the cuda context. Needed for cudaVideoCreate_PreferCUDA decode     */
@@ -601,7 +618,7 @@ typedef struct _CUVIDVP8PICPARAMS
             unsigned char show_frame : 1;
             unsigned char update_mb_segmentation_data : 1;    /**< Must be 0 if segmentation is not enabled */
             unsigned char Reserved2Bits : 2;
-        };
+        }vp8_frame_tag;
         unsigned char wFrameTagFlags;
     };
     unsigned char Reserved1[4];
@@ -743,6 +760,52 @@ typedef struct _CUVIDPROCPARAMS
     void *Reserved2[2];                 /**< Reserved for future use (set to zero)                                      */
 } CUVIDPROCPARAMS;
 
+/*********************************************************************************************************/
+//! \struct CUVIDGETDECODESTATUS
+//! Struct for reporting decode status.
+//! This structure is used in cuvidGetDecodeStatus API.
+/*********************************************************************************************************/
+typedef struct _CUVIDGETDECODESTATUS
+{
+    cuvidDecodeStatus decodeStatus;
+    unsigned int reserved[31];
+    void *pReserved[8];
+} CUVIDGETDECODESTATUS;
+
+/****************************************************/
+//! \struct CUVIDRECONFIGUREDECODERINFO
+//! Struct for decoder reset
+//! This structure is used in cuvidReconfigureDecoder() API
+/****************************************************/
+typedef struct _CUVIDRECONFIGUREDECODERINFO
+{
+    unsigned int ulWidth;             /**< IN: Coded sequence width in pixels, MUST be < = ulMaxWidth defined at CUVIDDECODECREATEINFO  */
+    unsigned int ulHeight;            /**< IN: Coded sequence height in pixels, MUST be < = ulMaxHeight defined at CUVIDDECODECREATEINFO  */
+    unsigned int ulTargetWidth;       /**< IN: Post processed output width */
+    unsigned int ulTargetHeight;      /**< IN: Post Processed output height */
+    unsigned int ulNumDecodeSurfaces; /**< IN: Maximum number of internal decode surfaces */
+    unsigned int reserved1[12];       /**< Reserved for future use. Set to Zero */
+    /**
+    * IN: Area of frame to be displayed. Use-case : Source Cropping
+    */
+    struct {
+        short left;
+        short top;
+        short right;
+        short bottom;
+    } display_area;
+    /**
+    * IN: Target Rectangle in the OutputFrame. Use-case : Aspect ratio Conversion
+    */
+    struct {
+        short left;
+        short top;
+        short right;
+        short bottom;
+    } target_rect;
+    unsigned int reserved2[11]; /**< Reserved for future use. Set to Zero */
+} CUVIDRECONFIGUREDECODERINFO;
+
 
 /***********************************************************************************************************/
 //! VIDEO_DECODER
@@ -805,6 +868,20 @@ typedef CUresult CUDAAPI tcuvidDestroyDecoder(CUvideodecoder hDecoder);
 /*****************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidDecodePicture(CUvideodecoder hDecoder, CUVIDPICPARAMS *pPicParams);
 
+/************************************************************************************************************/
+//! \fn CUresult CUDAAPI cuvidGetDecodeStatus(CUvideodecoder hDecoder, int nPicIdx);
+//! Get the decode status for frame corresponding to nPicIdx
+/************************************************************************************************************/
+typedef CUresult CUDAAPI tcuvidGetDecodeStatus(CUvideodecoder hDecoder, int nPicIdx, CUVIDGETDECODESTATUS* pDecodeStatus);
+
+/*********************************************************************************************************/
+//! \fn CUresult CUDAAPI cuvidReconfigureDecoder(CUvideodecoder hDecoder, CUVIDRECONFIGUREDECODERINFO *pDecReconfigParams)
+//! Used to reuse single decoder for multiple clips. Currently supports resolution change, resize params, display area
+//! params, target area params change for same codec. Must be called during CUVIDPARSERPARAMS::pfnSequenceCallback
+/*********************************************************************************************************/
+typedef CUresult CUDAAPI tcuvidReconfigureDecoder(CUvideodecoder hDecoder, CUVIDRECONFIGUREDECODERINFO *pDecReconfigParams);
+
+
 #if !defined(__CUVID_DEVPTR64) || defined(__CUVID_INTERNAL)
 /************************************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidMapVideoFrame(CUvideodecoder hDecoder, int nPicIdx, unsigned int *pDevPtr,
@@ -844,7 +921,6 @@ typedef CUresult CUDAAPI tcuvidUnmapVideoFrame64(CUvideodecoder hDecoder, unsign
 #define tcuvidUnmapVideoFrame    tcuvidUnmapVideoFrame64
 #endif
 #endif
-
 
 
 /********************************************************************************************************************/

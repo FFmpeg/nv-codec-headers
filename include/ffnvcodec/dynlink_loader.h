@@ -182,6 +182,8 @@ typedef struct CuvidFunctions {
     tcuvidCreateDecoder *cuvidCreateDecoder;
     tcuvidDestroyDecoder *cuvidDestroyDecoder;
     tcuvidDecodePicture *cuvidDecodePicture;
+    tcuvidGetDecodeStatus *cuvidGetDecodeStatus;
+    tcuvidReconfigureDecoder *cuvidReconfigureDecoder;
     tcuvidMapVideoFrame *cuvidMapVideoFrame;
     tcuvidUnmapVideoFrame *cuvidUnmapVideoFrame;
     tcuvidCtxLockCreate *cuvidCtxLockCreate;
@@ -282,6 +284,8 @@ static inline int cuvid_load_functions(CuvidFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuvidCreateDecoder, tcuvidCreateDecoder, "cuvidCreateDecoder");
     LOAD_SYMBOL(cuvidDestroyDecoder, tcuvidDestroyDecoder, "cuvidDestroyDecoder");
     LOAD_SYMBOL(cuvidDecodePicture, tcuvidDecodePicture, "cuvidDecodePicture");
+    LOAD_SYMBOL(cuvidGetDecodeStatus, tcuvidGetDecodeStatus, "cuvidGetDecodeStatus");
+    LOAD_SYMBOL(cuvidReconfigureDecoder, tcuvidReconfigureDecoder, "cuvidReconfigureDecoder");
 #ifdef __CUVID_DEVPTR64
     LOAD_SYMBOL(cuvidMapVideoFrame, tcuvidMapVideoFrame, "cuvidMapVideoFrame64");
     LOAD_SYMBOL(cuvidUnmapVideoFrame, tcuvidUnmapVideoFrame, "cuvidUnmapVideoFrame64");

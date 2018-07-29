@@ -306,8 +306,13 @@ typedef struct _CUVIDPARSERDISPINFO
 
 /***********************************************************************************************************************/
 //! Parser callbacks
-//! The parser will call these synchronously from within cuvidParseVideoData(), whenever a picture is ready to
-//! be decoded and/or displayed. First argument in functions is "void *pUserData" member of structure CUVIDSOURCEPARAMS
+//! The parser will call these synchronously from within cuvidParseVideoData(), whenever there is seqeuence change or a picture
+//! is ready to be decoded and/or displayed. First argument in functions is "void *pUserData" member of structure CUVIDSOURCEPARAMS
+//! Return values from these callbacks are interpreted as:
+//! PFNVIDSEQUENCECALLBACK : 0: fail, 1: suceeded, > 1: override dpb size of parser (set by CUVIDPARSERPARAMS::ulMaxNumDecodeSurfaces
+//! while creating parser)
+//! PFNVIDDECODECALLBACK   : 0: fail, >=1: suceeded
+//! PFNVIDDISPLAYCALLBACK  : 0: fail, >=1: suceeded
 /***********************************************************************************************************************/
 typedef int (CUDAAPI *PFNVIDSEQUENCECALLBACK)(void *, CUVIDEOFORMAT *);
 typedef int (CUDAAPI *PFNVIDDECODECALLBACK)(void *, CUVIDPICPARAMS *);
