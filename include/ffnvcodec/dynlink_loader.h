@@ -171,6 +171,13 @@ typedef struct CudaFunctions {
     tcuGraphicsUnmapResources *cuGraphicsUnmapResources;
     tcuGraphicsSubResourceGetMappedArray *cuGraphicsSubResourceGetMappedArray;
 
+    tcuImportExternalMemory *cuImportExternalMemory;
+    tcuDestroyExternalMemory *cuDestroyExternalMemory;
+    tcuExternalMemoryGetMappedBuffer *cuExternalMemoryGetMappedBuffer;
+    tcuExternalMemoryGetMappedMipmappedArray *cuExternalMemoryGetMappedMipmappedArray;
+
+    tcuMipmappedArrayGetLevel *cuMipmappedArrayGetLevel;
+
     FFNV_LIB_HANDLE lib;
 } CudaFunctions;
 #else
@@ -271,6 +278,12 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuGraphicsMapResources, tcuGraphicsMapResources, "cuGraphicsMapResources");
     LOAD_SYMBOL(cuGraphicsUnmapResources, tcuGraphicsUnmapResources, "cuGraphicsUnmapResources");
     LOAD_SYMBOL(cuGraphicsSubResourceGetMappedArray, tcuGraphicsSubResourceGetMappedArray, "cuGraphicsSubResourceGetMappedArray");
+
+    LOAD_SYMBOL_OPT(cuImportExternalMemory, tcuImportExternalMemory, "cuImportExternalMemory");
+    LOAD_SYMBOL_OPT(cuDestroyExternalMemory, tcuDestroyExternalMemory, "cuDestroyExternalMemory");
+    LOAD_SYMBOL_OPT(cuExternalMemoryGetMappedBuffer, tcuExternalMemoryGetMappedBuffer, "cuExternalMemoryGetMappedBuffer");
+    LOAD_SYMBOL_OPT(cuExternalMemoryGetMappedMipmappedArray, tcuExternalMemoryGetMappedMipmappedArray, "cuExternalMemoryGetMappedMipmappedArray");
+    LOAD_SYMBOL_OPT(cuMipmappedArrayGetLevel, tcuMipmappedArrayGetLevel, "cuMipmappedArrayGetLevel");
 
     GENERIC_LOAD_FUNC_FINALE(cuda);
 }
