@@ -45,6 +45,9 @@ typedef void* CUarray;
 typedef void* CUcontext;
 typedef void* CUstream;
 typedef void* CUevent;
+typedef void* CUmipmappedArray;
+typedef void* CUgraphicsResource;
+typedef void* CUexternalMemory;
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
 typedef unsigned long long CUdeviceptr;
 #else
@@ -55,6 +58,17 @@ typedef enum cudaError_enum {
     CUDA_SUCCESS = 0,
     CUDA_ERROR_NOT_READY = 600
 } CUresult;
+
+typedef enum CUarray_format_enum {
+    CU_AD_FORMAT_UNSIGNED_INT8  = 0x01,
+    CU_AD_FORMAT_UNSIGNED_INT16 = 0x02,
+    CU_AD_FORMAT_UNSIGNED_INT32 = 0x03,
+    CU_AD_FORMAT_SIGNED_INT8    = 0x08,
+    CU_AD_FORMAT_SIGNED_INT16   = 0x09,
+    CU_AD_FORMAT_SIGNED_INT32   = 0x0a,
+    CU_AD_FORMAT_HALF           = 0x10,
+    CU_AD_FORMAT_FLOAT          = 0x20
+} CUarray_format;
 
 typedef enum CUmemorytype_enum {
     CU_MEMORYTYPE_HOST = 1,
@@ -77,6 +91,14 @@ typedef enum CUgraphicsRegisterFlags_enum {
     CU_GRAPHICS_REGISTER_FLAGS_SURFACE_LDST = 4,
     CU_GRAPHICS_REGISTER_FLAGS_TEXTURE_GATHER = 8
 } CUgraphicsRegisterFlags;
+
+typedef enum CUexternalMemoryHandleType_enum {
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD        = 1,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32     = 2,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_KMT = 3,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_HEAP       = 4,
+    CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE   = 5,
+} CUexternalMemoryHandleType;
 
 typedef struct CUDA_MEMCPY2D_st {
     size_t srcXInBytes;
@@ -101,13 +123,50 @@ typedef struct CUDA_MEMCPY2D_st {
 
 typedef unsigned int GLenum;
 typedef unsigned int GLuint;
-typedef struct CUgraphicsResource_st *CUgraphicsResource;
 
 typedef enum CUGLDeviceList_enum {
     CU_GL_DEVICE_LIST_ALL = 1,
     CU_GL_DEVICE_LIST_CURRENT_FRAME = 2,
     CU_GL_DEVICE_LIST_NEXT_FRAME = 3,
 } CUGLDeviceList;
+
+typedef struct CUDA_EXTERNAL_MEMORY_HANDLE_DESC_st {
+    CUexternalMemoryHandleType type;
+    union {
+        int fd;
+        struct {
+            void *handle;
+            const void *name;
+        } win32;
+    } handle;
+    unsigned long long size;
+    unsigned int flags;
+    unsigned int reserved[16];
+} CUDA_EXTERNAL_MEMORY_HANDLE_DESC;
+
+typedef struct CUDA_EXTERNAL_MEMORY_BUFFER_DESC_st {
+    unsigned long long offset;
+    unsigned long long size;
+    unsigned int flags;
+    unsigned int reserved[16];
+} CUDA_EXTERNAL_MEMORY_BUFFER_DESC;
+
+typedef struct CUDA_ARRAY3D_DESCRIPTOR_st {
+    size_t Width;
+    size_t Height;
+    size_t Depth;
+
+    CUarray_format Format;
+    unsigned int NumChannels;
+    unsigned int Flags;
+} CUDA_ARRAY3D_DESCRIPTOR;
+
+typedef struct CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_st {
+    unsigned long long offset;
+    CUDA_ARRAY3D_DESCRIPTOR arrayDesc;
+    unsigned int numLevels;
+    unsigned int reserved[16];
+} CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC;
 
 #define CU_STREAM_NON_BLOCKING 1
 #define CU_EVENT_BLOCKING_SYNC 1
@@ -150,4 +209,9 @@ typedef CUresult CUDAAPI tcuGraphicsMapResources(unsigned int count, CUgraphicsR
 typedef CUresult CUDAAPI tcuGraphicsUnmapResources(unsigned int count, CUgraphicsResource* resources, CUstream hStream);
 typedef CUresult CUDAAPI tcuGraphicsSubResourceGetMappedArray(CUarray* pArray, CUgraphicsResource resource, unsigned int arrayIndex, unsigned int mipLevel);
 
+typedef CUresult CUDAAPI tcuImportExternalMemory(CUexternalMemory* extMem_out, const CUDA_EXTERNAL_MEMORY_HANDLE_DESC* memHandleDesc);
+typedef CUresult CUDAAPI tcuDestroyExternalMemory(CUexternalMemory extMem);
+typedef CUresult CUDAAPI tcuExternalMemoryGetMappedBuffer(CUdeviceptr* devPtr, CUexternalMemory extMem, const CUDA_EXTERNAL_MEMORY_BUFFER_DESC* bufferDesc);
+typedef CUresult CUDAAPI tcuExternalMemoryGetMappedMipmappedArray(CUmipmappedArray* mipmap, CUexternalMemory extMem, const CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC* mipmapDesc);
+typedef CUresult CUDAAPI tcuMipmappedArrayGetLevel(CUarray* pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level);
 #endif
