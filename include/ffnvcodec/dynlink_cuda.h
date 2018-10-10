@@ -100,6 +100,10 @@ typedef enum CUexternalMemoryHandleType_enum {
     CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE   = 5,
 } CUexternalMemoryHandleType;
 
+typedef struct CUuuid_st {
+    char bytes[16];
+} CUuuid;
+
 typedef struct CUDA_MEMCPY2D_st {
     size_t srcXInBytes;
     size_t srcY;
@@ -178,6 +182,7 @@ typedef CUresult CUDAAPI tcuInit(unsigned int Flags);
 typedef CUresult CUDAAPI tcuDeviceGetCount(int *count);
 typedef CUresult CUDAAPI tcuDeviceGet(CUdevice *device, int ordinal);
 typedef CUresult CUDAAPI tcuDeviceGetName(char *name, int len, CUdevice dev);
+typedef CUresult CUDAAPI tcuDeviceGetUuid(CUuuid *uuid, CUdevice dev);
 typedef CUresult CUDAAPI tcuDeviceComputeCapability(int *major, int *minor, CUdevice dev);
 typedef CUresult CUDAAPI tcuCtxCreate_v2(CUcontext *pctx, unsigned int flags, CUdevice dev);
 typedef CUresult CUDAAPI tcuCtxSetLimit(CUlimit limit, size_t value);

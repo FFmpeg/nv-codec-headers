@@ -140,6 +140,7 @@ typedef struct CudaFunctions {
     tcuDeviceGetCount *cuDeviceGetCount;
     tcuDeviceGet *cuDeviceGet;
     tcuDeviceGetName *cuDeviceGetName;
+    tcuDeviceGetUuid *cuDeviceGetUuid;
     tcuDeviceComputeCapability *cuDeviceComputeCapability;
     tcuCtxCreate_v2 *cuCtxCreate;
     tcuCtxSetLimit *cuCtxSetLimit;
@@ -246,6 +247,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuDeviceGetCount, tcuDeviceGetCount, "cuDeviceGetCount");
     LOAD_SYMBOL(cuDeviceGet, tcuDeviceGet, "cuDeviceGet");
     LOAD_SYMBOL(cuDeviceGetName, tcuDeviceGetName, "cuDeviceGetName");
+    LOAD_SYMBOL(cuDeviceGetUuid, tcuDeviceGetUuid, "cuDeviceGetUuid");
     LOAD_SYMBOL(cuDeviceComputeCapability, tcuDeviceComputeCapability, "cuDeviceComputeCapability");
     LOAD_SYMBOL(cuCtxCreate, tcuCtxCreate_v2, "cuCtxCreate_v2");
     LOAD_SYMBOL(cuCtxSetLimit, tcuCtxSetLimit, "cuCtxSetLimit");
