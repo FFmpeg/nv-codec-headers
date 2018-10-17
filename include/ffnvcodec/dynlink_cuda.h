@@ -48,6 +48,7 @@ typedef void* CUevent;
 typedef void* CUmipmappedArray;
 typedef void* CUgraphicsResource;
 typedef void* CUexternalMemory;
+typedef void* CUexternalSemaphore;
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
 typedef unsigned long long CUdeviceptr;
 #else
@@ -125,6 +126,13 @@ typedef enum CUexternalMemoryHandleType_enum {
     CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE   = 5,
 } CUexternalMemoryHandleType;
 
+typedef enum CUexternalSemaphoreHandleType_enum {
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD        = 1,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32     = 2,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT = 3,
+    CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE      = 4
+} CUexternalSemaphoreHandleType;
+
 #ifndef CU_UUID_HAS_BEEN_DEFINED
 #define CU_UUID_HAS_BEEN_DEFINED
 typedef struct CUuuid_st {
@@ -182,6 +190,32 @@ typedef struct CUDA_EXTERNAL_MEMORY_BUFFER_DESC_st {
     unsigned int flags;
     unsigned int reserved[16];
 } CUDA_EXTERNAL_MEMORY_BUFFER_DESC;
+
+typedef struct CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC_st {
+    CUexternalSemaphoreHandleType type;
+    union {
+        int fd;
+        struct {
+            void *handle;
+            const void *name;
+        } win32;
+    } handle;
+    unsigned int flags;
+    unsigned int reserved[16];
+} CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC;
+
+typedef struct CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS_st {
+    struct {
+        struct {
+            unsigned long long value;
+        } fence;
+        unsigned int reserved[16];
+    } params;
+    unsigned int flags;
+    unsigned int reserved[16];
+} CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS;
+
+typedef CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS;
 
 typedef struct CUDA_ARRAY3D_DESCRIPTOR_st {
     size_t Width;
@@ -248,4 +282,9 @@ typedef CUresult CUDAAPI tcuDestroyExternalMemory(CUexternalMemory extMem);
 typedef CUresult CUDAAPI tcuExternalMemoryGetMappedBuffer(CUdeviceptr* devPtr, CUexternalMemory extMem, const CUDA_EXTERNAL_MEMORY_BUFFER_DESC* bufferDesc);
 typedef CUresult CUDAAPI tcuExternalMemoryGetMappedMipmappedArray(CUmipmappedArray* mipmap, CUexternalMemory extMem, const CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC* mipmapDesc);
 typedef CUresult CUDAAPI tcuMipmappedArrayGetLevel(CUarray* pLevelArray, CUmipmappedArray hMipmappedArray, unsigned int level);
+
+typedef CUresult CUDAAPI tcuImportExternalSemaphore(CUexternalSemaphore* extSem_out, const CUDA_EXTERNAL_SEMAPHORE_HANDLE_DESC* semHandleDesc);
+typedef CUresult CUDAAPI tcuDestroyExternalSemaphore(CUexternalSemaphore extSem);
+typedef CUresult CUDAAPI tcuSignalExternalSemaphoresAsync(const CUexternalSemaphore* extSemArray, const CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS* paramsArray, unsigned int numExtSems, CUstream stream);
+typedef CUresult CUDAAPI tcuWaitExternalSemaphoresAsync(const CUexternalSemaphore* extSemArray, const CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS* paramsArray, unsigned int numExtSems, CUstream stream);
 #endif
