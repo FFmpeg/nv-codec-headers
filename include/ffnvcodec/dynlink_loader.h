@@ -63,7 +63,7 @@
 #if !defined(FFNV_LOAD_FUNC) || !defined(FFNV_SYM_FUNC)
 # ifdef _WIN32
 #  define FFNV_LOAD_FUNC(path) LoadLibrary(TEXT(path))
-#  define FFNV_SYM_FUNC(lib, sym) GetProcAddress((lib), TEXT(sym))
+#  define FFNV_SYM_FUNC(lib, sym) GetProcAddress((lib), (sym))
 #  define FFNV_FREE_FUNC(lib) FreeLibrary(lib)
 # else
 #  include <dlfcn.h>
