@@ -180,6 +180,11 @@ typedef struct CudaFunctions {
 
     tcuMipmappedArrayGetLevel *cuMipmappedArrayGetLevel;
 
+    tcuImportExternalSemaphore *cuImportExternalSemaphore;
+    tcuDestroyExternalSemaphore *cuDestroyExternalSemaphore;
+    tcuSignalExternalSemaphoresAsync *cuSignalExternalSemaphoresAsync;
+    tcuWaitExternalSemaphoresAsync *cuWaitExternalSemaphoresAsync;
+
     FFNV_LIB_HANDLE lib;
 } CudaFunctions;
 #else
@@ -286,6 +291,11 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL_OPT(cuExternalMemoryGetMappedBuffer, tcuExternalMemoryGetMappedBuffer, "cuExternalMemoryGetMappedBuffer");
     LOAD_SYMBOL_OPT(cuExternalMemoryGetMappedMipmappedArray, tcuExternalMemoryGetMappedMipmappedArray, "cuExternalMemoryGetMappedMipmappedArray");
     LOAD_SYMBOL_OPT(cuMipmappedArrayGetLevel, tcuMipmappedArrayGetLevel, "cuMipmappedArrayGetLevel");
+
+    LOAD_SYMBOL_OPT(cuImportExternalSemaphore, tcuImportExternalSemaphore, "cuImportExternalSemaphore");
+    LOAD_SYMBOL_OPT(cuDestroyExternalSemaphore, tcuDestroyExternalSemaphore, "cuDestroyExternalSemaphore");
+    LOAD_SYMBOL_OPT(cuSignalExternalSemaphoresAsync, tcuSignalExternalSemaphoresAsync, "cuSignalExternalSemaphoresAsync");
+    LOAD_SYMBOL_OPT(cuWaitExternalSemaphoresAsync, tcuWaitExternalSemaphoresAsync, "cuWaitExternalSemaphoresAsync");
 
     GENERIC_LOAD_FUNC_FINALE(cuda);
 }
