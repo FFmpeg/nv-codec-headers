@@ -100,9 +100,12 @@ typedef enum CUexternalMemoryHandleType_enum {
     CU_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE   = 5,
 } CUexternalMemoryHandleType;
 
+#ifndef CU_UUID_HAS_BEEN_DEFINED
+#define CU_UUID_HAS_BEEN_DEFINED
 typedef struct CUuuid_st {
     char bytes[16];
 } CUuuid;
+#endif
 
 typedef struct CUDA_MEMCPY2D_st {
     size_t srcXInBytes;
