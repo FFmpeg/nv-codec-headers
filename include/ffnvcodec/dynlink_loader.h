@@ -166,6 +166,13 @@ typedef struct CudaFunctions {
     tcuEventQuery *cuEventQuery;
     tcuEventRecord *cuEventRecord;
 
+    tcuLaunchKernel *cuLaunchKernel;
+    tcuModuleLoadData *cuModuleLoadData;
+    tcuModuleUnload *cuModuleUnload;
+    tcuModuleGetFunction *cuModuleGetFunction;
+    tcuTexObjectCreate *cuTexObjectCreate;
+    tcuTexObjectDestroy *cuTexObjectDestroy;
+
     tcuGLGetDevices_v2 *cuGLGetDevices;
     tcuGraphicsGLRegisterImage *cuGraphicsGLRegisterImage;
     tcuGraphicsUnregisterResource *cuGraphicsUnregisterResource;
@@ -279,6 +286,13 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuEventSynchronize, tcuEventSynchronize, "cuEventSynchronize");
     LOAD_SYMBOL(cuEventQuery, tcuEventQuery, "cuEventQuery");
     LOAD_SYMBOL(cuEventRecord, tcuEventRecord, "cuEventRecord");
+
+    LOAD_SYMBOL(cuLaunchKernel, tcuLaunchKernel, "cuLaunchKernel");
+    LOAD_SYMBOL(cuModuleLoadData, tcuModuleLoadData, "cuModuleLoadData");
+    LOAD_SYMBOL(cuModuleUnload, tcuModuleUnload, "cuModuleUnload");
+    LOAD_SYMBOL(cuModuleGetFunction, tcuModuleGetFunction, "cuModuleGetFunction");
+    LOAD_SYMBOL(cuTexObjectCreate, tcuTexObjectCreate, "cuTexObjectCreate");
+    LOAD_SYMBOL(cuTexObjectDestroy, tcuTexObjectDestroy, "cuTexObjectDestroy");
 
     LOAD_SYMBOL(cuGLGetDevices, tcuGLGetDevices_v2, "cuGLGetDevices_v2");
     LOAD_SYMBOL(cuGraphicsGLRegisterImage, tcuGraphicsGLRegisterImage, "cuGraphicsGLRegisterImage");
