@@ -45,6 +45,9 @@ typedef void* CUarray;
 typedef void* CUcontext;
 typedef void* CUstream;
 typedef void* CUevent;
+typedef void* CUfunction;
+typedef void* CUmodule;
+typedef void* CUtexObject;
 typedef void* CUmipmappedArray;
 typedef void* CUgraphicsResource;
 typedef void* CUexternalMemory;
@@ -110,6 +113,25 @@ typedef enum CUlimit_enum {
     CU_LIMIT_DEV_RUNTIME_PENDING_LAUNCH_COUNT = 4
 } CUlimit;
 
+typedef enum CUresourcetype_enum {
+    CU_RESOURCE_TYPE_ARRAY           = 0x00,
+    CU_RESOURCE_TYPE_MIPMAPPED_ARRAY = 0x01,
+    CU_RESOURCE_TYPE_LINEAR          = 0x02,
+    CU_RESOURCE_TYPE_PITCH2D         = 0x03
+} CUresourcetype;
+
+typedef enum CUaddress_mode_enum {
+    CU_TR_ADDRESS_MODE_WRAP = 0,
+    CU_TR_ADDRESS_MODE_CLAMP = 1,
+    CU_TR_ADDRESS_MODE_MIRROR = 2,
+    CU_TR_ADDRESS_MODE_BORDER = 3
+} CUaddress_mode;
+
+typedef enum CUfilter_mode_enum {
+    CU_TR_FILTER_MODE_POINT = 0,
+    CU_TR_FILTER_MODE_LINEAR = 1
+} CUfilter_mode;
+
 typedef enum CUgraphicsRegisterFlags_enum {
     CU_GRAPHICS_REGISTER_FLAGS_NONE = 0,
     CU_GRAPHICS_REGISTER_FLAGS_READ_ONLY = 1,
@@ -160,6 +182,52 @@ typedef struct CUDA_MEMCPY2D_st {
     size_t WidthInBytes;
     size_t Height;
 } CUDA_MEMCPY2D;
+
+typedef struct CUDA_RESOURCE_DESC_st {
+    CUresourcetype resType;
+    union {
+        struct {
+            CUarray hArray;
+        } array;
+        struct {
+            CUmipmappedArray hMipmappedArray;
+        } mipmap;
+        struct {
+            CUdeviceptr devPtr;
+            CUarray_format format;
+            unsigned int numChannels;
+            size_t sizeInBytes;
+        } linear;
+        struct {
+            CUdeviceptr devPtr;
+            CUarray_format format;
+            unsigned int numChannels;
+            size_t width;
+            size_t height;
+            size_t pitchInBytes;
+        } pitch2D;
+        struct {
+            int reserved[32];
+        } reserved;
+    } res;
+    unsigned int flags;
+} CUDA_RESOURCE_DESC;
+
+typedef struct CUDA_TEXTURE_DESC_st {
+    CUaddress_mode addressMode[3];
+    CUfilter_mode filterMode;
+    unsigned int flags;
+    unsigned int maxAnisotropy;
+    CUfilter_mode mipmapFilterMode;
+    float mipmapLevelBias;
+    float minMipmapLevelClamp;
+    float maxMipmapLevelClamp;
+    float borderColor[4];
+    int reserved[12];
+} CUDA_TEXTURE_DESC;
+
+/* Unused type */
+typedef struct CUDA_RESOURCE_VIEW_DESC_st CUDA_RESOURCE_VIEW_DESC;
 
 typedef unsigned int GLenum;
 typedef unsigned int GLuint;
@@ -237,6 +305,7 @@ typedef struct CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_st {
 #define CU_STREAM_NON_BLOCKING 1
 #define CU_EVENT_BLOCKING_SYNC 1
 #define CU_EVENT_DISABLE_TIMING 2
+#define CU_TRSF_READ_AS_INTEGER 1
 
 typedef void CUDAAPI CUstreamCallback(CUstream hStream, CUresult status, void *userdata);
 
@@ -269,6 +338,13 @@ typedef CUresult CUDAAPI tcuEventDestroy_v2(CUevent hEvent);
 typedef CUresult CUDAAPI tcuEventSynchronize(CUevent hEvent);
 typedef CUresult CUDAAPI tcuEventQuery(CUevent hEvent);
 typedef CUresult CUDAAPI tcuEventRecord(CUevent hEvent, CUstream hStream);
+
+typedef CUresult CUDAAPI tcuLaunchKernel(CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void** kernelParams, void** extra);
+typedef CUresult CUDAAPI tcuModuleLoadData(CUmodule* module, const void* image);
+typedef CUresult CUDAAPI tcuModuleUnload(CUmodule hmod);
+typedef CUresult CUDAAPI tcuModuleGetFunction(CUfunction* hfunc, CUmodule hmod, const char* name);
+typedef CUresult CUDAAPI tcuTexObjectCreate(CUtexObject* pTexObject, const CUDA_RESOURCE_DESC* pResDesc, const CUDA_TEXTURE_DESC* pTexDesc, const CUDA_RESOURCE_VIEW_DESC* pResViewDesc);
+typedef CUresult CUDAAPI tcuTexObjectDestroy(CUtexObject texObject);
 
 typedef CUresult CUDAAPI tcuGLGetDevices_v2(unsigned int* pCudaDeviceCount, CUdevice* pCudaDevices, unsigned int cudaDeviceCount, CUGLDeviceList deviceList);
 typedef CUresult CUDAAPI tcuGraphicsGLRegisterImage(CUgraphicsResource* pCudaResource, GLuint image, GLenum target, unsigned int Flags);
