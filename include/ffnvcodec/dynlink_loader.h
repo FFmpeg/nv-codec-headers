@@ -139,6 +139,7 @@ typedef struct CudaFunctions {
     tcuInit *cuInit;
     tcuDeviceGetCount *cuDeviceGetCount;
     tcuDeviceGet *cuDeviceGet;
+    tcuDeviceGetAttribute *cuDeviceGetAttribute;
     tcuDeviceGetName *cuDeviceGetName;
     tcuDeviceGetUuid *cuDeviceGetUuid;
     tcuDeviceComputeCapability *cuDeviceComputeCapability;
@@ -246,6 +247,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuInit, tcuInit, "cuInit");
     LOAD_SYMBOL(cuDeviceGetCount, tcuDeviceGetCount, "cuDeviceGetCount");
     LOAD_SYMBOL(cuDeviceGet, tcuDeviceGet, "cuDeviceGet");
+    LOAD_SYMBOL(cuDeviceGetAttribute, tcuDeviceGetAttribute, "cuDeviceGetAttribute");
     LOAD_SYMBOL(cuDeviceGetName, tcuDeviceGetName, "cuDeviceGetName");
     LOAD_SYMBOL(cuDeviceGetUuid, tcuDeviceGetUuid, "cuDeviceGetUuid");
     LOAD_SYMBOL(cuDeviceComputeCapability, tcuDeviceComputeCapability, "cuDeviceComputeCapability");
