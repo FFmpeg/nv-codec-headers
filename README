@@ -1,6 +1,6 @@
 FFmpeg version of headers required to interface with Nvidias codec APIs.
 
-Corresponds to Video Codec SDK version 8.2.25.
+Corresponds to Video Codec SDK version 8.2.16.
 
 Minimum required driver versions:
 Linux: 396.24 or newer

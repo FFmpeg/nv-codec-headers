@@ -114,7 +114,7 @@ typedef void* NV_ENC_OUTPUT_PTR;            /**< NVENCODE API output buffer*/
 typedef void* NV_ENC_REGISTERED_PTR;        /**< A Resource that has been registered with NVENCODE API*/
 
 #define NVENCAPI_MAJOR_VERSION 8
-#define NVENCAPI_MINOR_VERSION 1
+#define NVENCAPI_MINOR_VERSION 2
 
 #define NVENCAPI_VERSION (NVENCAPI_MAJOR_VERSION | (NVENCAPI_MINOR_VERSION << 24))
 
