@@ -41,8 +41,11 @@
 #endif
 #endif
 
-#define NVDECAPI_MAJOR_VERSION 8
-#define NVDECAPI_MINOR_VERSION 1
+#define NVDECAPI_MAJOR_VERSION 9
+#define NVDECAPI_MINOR_VERSION 0
+
+#define NVDECAPI_CHECK_VERSION(major, minor) \
+    ((major) < NVDECAPI_MAJOR_VERSION || ((major) == NVDECAPI_MAJOR_VERSION && (minor) <= NVDECAPI_MINOR_VERSION))
 
 #define NVDECAPI_VERSION (NVDECAPI_MAJOR_VERSION | (NVDECAPI_MINOR_VERSION << 24))
 
@@ -91,9 +94,12 @@ typedef enum cudaVideoCodec_enum {
 //! These enums are used in CUVIDDECODECREATEINFO structure
 /*********************************************************************************/
 typedef enum cudaVideoSurfaceFormat_enum {
-    cudaVideoSurfaceFormat_NV12=0,       /**< Semi-Planar YUV [Y plane followed by interleaved UV plane]     */
-    cudaVideoSurfaceFormat_P016=1        /**< 16 bit Semi-Planar YUV [Y plane followed by interleaved UV plane].
-                                              Can be used for 10 bit(6LSB bits 0), 12 bit (4LSB bits 0)      */
+    cudaVideoSurfaceFormat_NV12=0,          /**< Semi-Planar YUV [Y plane followed by interleaved UV plane]     */
+    cudaVideoSurfaceFormat_P016=1,          /**< 16 bit Semi-Planar YUV [Y plane followed by interleaved UV plane].
+                                                 Can be used for 10 bit(6LSB bits 0), 12 bit (4LSB bits 0)      */
+    cudaVideoSurfaceFormat_YUV444=2,        /**< Planar YUV [Y plane followed by U and V planes]                */
+    cudaVideoSurfaceFormat_YUV444_16Bit=3,  /**< 16 bit Planar YUV [Y plane followed by U and V planes].
+                                                 Can be used for 10 bit(6LSB bits 0), 12 bit (4LSB bits 0)      */
 } cudaVideoSurfaceFormat;
 
 /******************************************************************************************************************/
@@ -567,7 +573,31 @@ typedef struct _CUVIDHEVCPICPARAMS
 
     unsigned short column_width_minus1[21];
     unsigned short row_height_minus1[21];
-    unsigned int   reserved3[15];
+
+    // sps and pps extension HEVC-main 444
+    unsigned char sps_range_extension_flag;
+    unsigned char transform_skip_rotation_enabled_flag;
+    unsigned char transform_skip_context_enabled_flag;
+    unsigned char implicit_rdpcm_enabled_flag;
+
+    unsigned char explicit_rdpcm_enabled_flag;
+    unsigned char extended_precision_processing_flag;
+    unsigned char intra_smoothing_disabled_flag;
+    unsigned char persistent_rice_adaptation_enabled_flag;
+
+    unsigned char cabac_bypass_alignment_enabled_flag;
+    unsigned char pps_range_extension_flag;
+    unsigned char cross_component_prediction_enabled_flag;
+    unsigned char chroma_qp_offset_list_enabled_flag;
+
+    unsigned char diff_cu_chroma_qp_offset_depth;
+    unsigned char chroma_qp_offset_list_len_minus1;
+    signed char cb_qp_offset_list[6];
+
+    signed char cr_qp_offset_list[6];
+    unsigned char reserved2[2];
+
+    unsigned int   reserved3[8];
 
     // RefPicSets
     int NumBitsForShortTermRPSInSlice;
