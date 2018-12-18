@@ -185,6 +185,7 @@ typedef struct CudaFunctions {
     tcuDestroyExternalMemory *cuDestroyExternalMemory;
     tcuExternalMemoryGetMappedBuffer *cuExternalMemoryGetMappedBuffer;
     tcuExternalMemoryGetMappedMipmappedArray *cuExternalMemoryGetMappedMipmappedArray;
+    tcuMipmappedArrayDestroy *cuMipmappedArrayDestroy;
 
     tcuMipmappedArrayGetLevel *cuMipmappedArrayGetLevel;
 
@@ -307,6 +308,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL_OPT(cuExternalMemoryGetMappedBuffer, tcuExternalMemoryGetMappedBuffer, "cuExternalMemoryGetMappedBuffer");
     LOAD_SYMBOL_OPT(cuExternalMemoryGetMappedMipmappedArray, tcuExternalMemoryGetMappedMipmappedArray, "cuExternalMemoryGetMappedMipmappedArray");
     LOAD_SYMBOL_OPT(cuMipmappedArrayGetLevel, tcuMipmappedArrayGetLevel, "cuMipmappedArrayGetLevel");
+    LOAD_SYMBOL_OPT(cuMipmappedArrayDestroy, tcuMipmappedArrayDestroy, "cuMipmappedArrayDestroy");
 
     LOAD_SYMBOL_OPT(cuImportExternalSemaphore, tcuImportExternalSemaphore, "cuImportExternalSemaphore");
     LOAD_SYMBOL_OPT(cuDestroyExternalSemaphore, tcuDestroyExternalSemaphore, "cuDestroyExternalSemaphore");
