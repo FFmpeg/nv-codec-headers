@@ -1,7 +1,7 @@
 /*
  * This copyright notice applies to this header file only:
  *
- * Copyright (c) 2010-2018 NVIDIA Corporation
+ * Copyright (c) 2010-2019 NVIDIA Corporation
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,7 +28,7 @@
 /*****************************************************************************************************/
 //! \file cuviddec.h
 //! NVDECODE API provides video decoding interface to NVIDIA GPU devices.
-//! \date 2015-2018
+//! \date 2015-2019
 //! This file contains constants, structure definitions and function prototypes used for decoding.
 /*****************************************************************************************************/
 
@@ -119,8 +119,6 @@ typedef enum cudaVideoDeinterlaceMode_enum {
 //! \enum cudaVideoChromaFormat
 //! Chroma format enums
 //! These enums are used in CUVIDDECODECREATEINFO and CUVIDDECODECAPS structures
-//! JPEG supports Monochrome, YUV 4:2:0, YUV 4:2:2 and YUV 4:4:4 chroma formats.
-//! H264, HEVC, VP9, VP8, VC1, MPEG1, MPEG2 and MPEG4 support YUV 4:2:0 chroma format only.
 /**************************************************************************************************************/
 typedef enum cudaVideoChromaFormat_enum {
     cudaVideoChromaFormat_Monochrome=0,  /**< MonoChrome */

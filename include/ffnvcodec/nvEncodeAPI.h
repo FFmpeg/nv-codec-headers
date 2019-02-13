@@ -1,7 +1,7 @@
 /*
  * This copyright notice applies to this header file only:
  *
- * Copyright (c) 2010-2018 NVIDIA Corporation
+ * Copyright (c) 2010-2019 NVIDIA Corporation
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -366,7 +366,7 @@ typedef enum _NV_ENC_BUFFER_FORMAT
     NV_ENC_BUFFER_FORMAT_U8                              = 0x40000000,  /**< Buffer format representing one-dimensional buffer.
                                                                              This format should be used only when registering the
                                                                              resource as output buffer, which will be used to write
-                                                                             the encoded bit stream or H.264 ME only mode output */
+                                                                             the encoded bit stream or H.264 ME only mode output. */
 } NV_ENC_BUFFER_FORMAT;
 
 #define NV_ENC_BUFFER_FORMAT_NV12_PL NV_ENC_BUFFER_FORMAT_NV12
@@ -620,7 +620,7 @@ typedef enum _NV_ENC_MEMORY_HEAP
 typedef enum _NV_ENC_BFRAME_REF_MODE
 {
     NV_ENC_BFRAME_REF_MODE_DISABLED = 0x0,          /**< B frame is not used for reference */
-    NV_ENC_BFRAME_REF_MODE_EACH     = 0x1,          /**< Each B-frame will be used for reference. currently not supported */
+    NV_ENC_BFRAME_REF_MODE_EACH     = 0x1,          /**< Each B-frame will be used for reference. currently not supported for H.264 */
     NV_ENC_BFRAME_REF_MODE_MIDDLE   = 0x2,          /**< Only(Number of B-frame)/2 th B-frame will be used for reference */
 } NV_ENC_BFRAME_REF_MODE;
 
@@ -698,8 +698,8 @@ typedef enum _NV_ENC_INPUT_RESOURCE_TYPE
 typedef enum _NV_ENC_BUFFER_USAGE
 {
     NV_ENC_INPUT_IMAGE              = 0x0,          /**< Registered surface will be used for input image */
-    NV_ENC_OUTPUT_MOTION_VECTOR     = 0x1,          /**< Registered surface will be used for output of H.264 MEOnly mode.
-                                                         This buffer usage type is not supported for HEVC MEonly mode. */
+    NV_ENC_OUTPUT_MOTION_VECTOR     = 0x1,          /**< Registered surface will be used for output of H.264 ME only mode.
+                                                         This buffer usage type is not supported for HEVC ME only mode. */
     NV_ENC_OUTPUT_BITSTREAM         = 0x2           /**< Registered surface will be used for output bitstream in encoding */
 } NV_ENC_BUFFER_USAGE;
 
@@ -1143,7 +1143,7 @@ typedef struct _NV_ENC_H264_MV_DATA
 typedef struct _NV_ENC_HEVC_MV_DATA
 {
     NV_ENC_MVECTOR    mv[4];               /**< up to 4 vectors within a CU */
-    uint8_t           cuType;              /**< 0 (I), 1(P), 2 (Skip) */
+    uint8_t           cuType;              /**< 0 (I), 1(P) */
     uint8_t           cuSize;              /**< 0: 8x8, 1: 16x16, 2: 32x32, 3: 64x64 */
     uint8_t           partitionMode;       /**< The CU partition mode
                                                 0 (2Nx2N), 1 (2NxN), 2(Nx2N), 3 (NxN),
@@ -1518,7 +1518,7 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
                                                                                            NV_ENC_PIC_PARAMS::meHintRefPicDist should preferably be set with enablePTD=1. */
     uint32_t                                   enableMEOnlyMode          :1;    /**< [in]: Set to 1 to enable ME Only Mode .*/
     uint32_t                                   enableWeightedPrediction  :1;    /**< [in]: Set this to 1 to enable weighted prediction. Not supported if encode session is configured for B-Frames( 'frameIntervalP' in NV_ENC_CONFIG is greater than 1).*/
-    uint32_t                                   enableOutputInVidmem      :1;    /**< [in]: Set this to 1 to enable output of NVENC in video memory created by application. This feature is not supported for HEVC MEonly mode. */
+    uint32_t                                   enableOutputInVidmem      :1;    /**< [in]: Set this to 1 to enable output of NVENC in video memory buffer created by application. This feature is not supported for HEVC ME only mode. */
     uint32_t                                   reservedBitFields         :26;   /**< [in]: Reserved bitfields and must be set to 0 */
     uint32_t                                   privDataSize;                    /**< [in]: Reserved private data buffer size and must be set to 0 */
     void*                                      privData;                        /**< [in]: Reserved private data buffer and must be set to NULL */
@@ -1638,8 +1638,12 @@ typedef struct _NV_ENC_PIC_PARAMS_H264
     uint32_t ltrMarkFrameIdx;                            /**< [in]: Specifies the long term referenceframe index to use for marking this frame as LTR.*/
     uint32_t ltrUseFrameBitmap;                          /**< [in]: Specifies the the associated bitmap of LTR frame indices to use when encoding this frame. */
     uint32_t ltrUsageMode;                               /**< [in]: Not supported. Reserved for future use and must be set to 0. */
-    uint32_t reserved [243];                             /**< [in]: Reserved and must be set to 0. */
-    void*    reserved2[62];                              /**< [in]: Reserved and must be set to NULL. */
+    uint32_t forceIntraSliceCount;                       /**< [in]: Specfies the number of slices to be forced to Intra in the current picture.
+                                                                    This option along with forceIntraSliceIdx[] array needs to be used with sliceMode = 3 only */
+    uint32_t *forceIntraSliceIdx;                        /**< [in]: Slice indices to be forced to intra in the current picture. Each slice index should be <= num_slices_in_picture -1. Index starts from 0 for first slice.
+                                                                    The number of entries in this array should be equal to forceIntraSliceCount */
+    uint32_t reserved [242];                             /**< [in]: Reserved and must be set to 0. */
+    void*    reserved2[61];                              /**< [in]: Reserved and must be set to NULL. */
 } NV_ENC_PIC_PARAMS_H264;
 
 /**
@@ -1794,7 +1798,8 @@ typedef struct _NV_ENC_LOCK_BITSTREAM
     uint32_t                version;                     /**< [in]: Struct version. Must be set to ::NV_ENC_LOCK_BITSTREAM_VER. */
     uint32_t                doNotWait         :1;        /**< [in]: If this flag is set, the NvEncodeAPI interface will return buffer pointer even if operation is not completed. If not set, the call will block until operation completes. */
     uint32_t                ltrFrame          :1;        /**< [out]: Flag indicating this frame is marked as LTR frame */
-    uint32_t                reservedBitFields :30;       /**< [in]: Reserved bit fields and must be set to 0 */
+    uint32_t                getRCStats        :1;        /**< [in]: If this flag is set then lockBitstream call will add additional intra-inter MB count and average MVX, MVY */
+    uint32_t                reservedBitFields :29;       /**< [in]: Reserved bit fields and must be set to 0 */
     void*                   outputBitstream;             /**< [in]: Pointer to the bitstream buffer being locked. */
     uint32_t*               sliceOffsets;                /**< [in,out]: Array which receives the slice offsets. This is not supported if NV_ENC_CONFIG_H264::sliceMode is 1 on Kepler GPUs. Array size must be equal to size of frame in MBs. */
     uint32_t                frameIdx;                    /**< [out]: Frame no. for which the bitstream is being retrieved. */
@@ -1812,7 +1817,12 @@ typedef struct _NV_ENC_LOCK_BITSTREAM
     uint32_t                frameSatd;                   /**< [out]: Total SATD cost for whole frame. */
     uint32_t                ltrFrameIdx;                 /**< [out]: Frame index associated with this LTR frame. */
     uint32_t                ltrFrameBitmap;              /**< [out]: Bitmap of LTR frames indices which were used for encoding this frame. Value of 0 if no LTR frames were used. */
-    uint32_t                reserved [236];              /**< [in]: Reserved and must be set to 0 */
+    uint32_t                reserved[13];                /**< [in]: Reserved and must be set to 0 */
+    uint32_t                intraMBCount;                /**< [out]: For H264, Number of Intra MBs in the encoded frame. For HEVC, Number of Intra CTBs in the encoded frame. Supported only if _NV_ENC_LOCK_BITSTREAM::getRCStats set to 1. */
+    uint32_t                interMBCount;                /**< [out]: For H264, Number of Inter MBs in the encoded frame, includes skip MBs. For HEVC, Number of Inter CTBs in the encoded frame. Supported only if _NV_ENC_LOCK_BITSTREAM::getRCStats set to 1. */
+    int32_t                 averageMVX;                  /**< [out]: Average Motion Vector in X direction for the encoded frame. Supported only if _NV_ENC_LOCK_BITSTREAM::getRCStats set to 1. */
+    int32_t                 averageMVY;                  /**< [out]: Average Motion Vector in y direction for the encoded frame. Supported only if _NV_ENC_LOCK_BITSTREAM::getRCStats set to 1. */
+    uint32_t                reserved1[219];              /**< [in]: Reserved and must be set to 0 */
     void*                   reserved2[64];               /**< [in]: Reserved and must be set to NULL */
 } NV_ENC_LOCK_BITSTREAM;
 
