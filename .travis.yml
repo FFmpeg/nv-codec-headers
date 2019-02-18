@@ -1,9 +1,12 @@
 language: c
 dist: xenial
 
-compiler:
-  - clang
-  - gcc
-
-install: make install
 script: make
+
+jobs:
+  include:
+    - name: "Linux GCC"
+    - name: "Linux Clang"
+      compiler: clang
+    - name: "macOS GCC"
+      os: osx
