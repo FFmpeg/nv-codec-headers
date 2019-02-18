@@ -1,0 +1,8 @@
+language: c
+dist: xenial
+
+compiler:
+  - clang
+  - gcc
+
+script: make
