@@ -3,7 +3,7 @@ dist: xenial
 
 script:
  - make
- - make install
+ - sudo make install
 
 jobs:
   include:
