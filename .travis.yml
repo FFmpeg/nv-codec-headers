@@ -1,7 +1,9 @@
 language: c
 dist: xenial
 
-script: make
+script:
+ - make
+ - make install
 
 jobs:
   include:
