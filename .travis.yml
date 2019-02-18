@@ -5,4 +5,5 @@ compiler:
   - clang
   - gcc
 
+install: make install
 script: make
