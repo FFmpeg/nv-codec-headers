@@ -323,6 +323,7 @@ typedef CUresult CUDAAPI tcuCtxPopCurrent_v2(CUcontext *pctx);
 typedef CUresult CUDAAPI tcuCtxDestroy_v2(CUcontext ctx);
 typedef CUresult CUDAAPI tcuMemAlloc_v2(CUdeviceptr *dptr, size_t bytesize);
 typedef CUresult CUDAAPI tcuMemAllocPitch_v2(CUdeviceptr *dptr, size_t *pPitch, size_t WidthInBytes, size_t Height, unsigned int ElementSizeBytes);
+typedef CUresult CUDAAPI tcuMemsetD8Async(CUdeviceptr dstDevice, unsigned char uc, size_t N, CUstream hStream);
 typedef CUresult CUDAAPI tcuMemFree_v2(CUdeviceptr dptr);
 typedef CUresult CUDAAPI tcuMemcpy2D_v2(const CUDA_MEMCPY2D *pcopy);
 typedef CUresult CUDAAPI tcuMemcpy2DAsync_v2(const CUDA_MEMCPY2D *pcopy, CUstream hStream);
