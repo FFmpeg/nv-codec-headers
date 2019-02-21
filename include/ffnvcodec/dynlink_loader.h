@@ -150,6 +150,7 @@ typedef struct CudaFunctions {
     tcuCtxDestroy_v2 *cuCtxDestroy;
     tcuMemAlloc_v2 *cuMemAlloc;
     tcuMemAllocPitch_v2 *cuMemAllocPitch;
+    tcuMemsetD8Async *cuMemsetD8Async;
     tcuMemFree_v2 *cuMemFree;
     tcuMemcpy2D_v2 *cuMemcpy2D;
     tcuMemcpy2DAsync_v2 *cuMemcpy2DAsync;
@@ -271,6 +272,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuCtxDestroy, tcuCtxDestroy_v2, "cuCtxDestroy_v2");
     LOAD_SYMBOL(cuMemAlloc, tcuMemAlloc_v2, "cuMemAlloc_v2");
     LOAD_SYMBOL(cuMemAllocPitch, tcuMemAllocPitch_v2, "cuMemAllocPitch_v2");
+    LOAD_SYMBOL(cuMemsetD8Async, tcuMemsetD8Async, "cuMemsetD8Async");
     LOAD_SYMBOL(cuMemFree, tcuMemFree_v2, "cuMemFree_v2");
     LOAD_SYMBOL(cuMemcpy2D, tcuMemcpy2D_v2, "cuMemcpy2D_v2");
     LOAD_SYMBOL(cuMemcpy2DAsync, tcuMemcpy2DAsync_v2, "cuMemcpy2DAsync_v2");
