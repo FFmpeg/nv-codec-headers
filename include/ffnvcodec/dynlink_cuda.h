@@ -329,6 +329,7 @@ typedef CUresult CUDAAPI tcuMemcpy2D_v2(const CUDA_MEMCPY2D *pcopy);
 typedef CUresult CUDAAPI tcuMemcpy2DAsync_v2(const CUDA_MEMCPY2D *pcopy, CUstream hStream);
 typedef CUresult CUDAAPI tcuGetErrorName(CUresult error, const char** pstr);
 typedef CUresult CUDAAPI tcuGetErrorString(CUresult error, const char** pstr);
+typedef CUresult CUDAAPI tcuCtxGetDevice(CUdevice *device);
 
 typedef CUresult CUDAAPI tcuStreamCreate(CUstream *phStream, unsigned int flags);
 typedef CUresult CUDAAPI tcuStreamQuery(CUstream hStream);
