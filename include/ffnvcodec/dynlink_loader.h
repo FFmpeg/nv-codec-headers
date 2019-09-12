@@ -156,6 +156,7 @@ typedef struct CudaFunctions {
     tcuMemcpy2DAsync_v2 *cuMemcpy2DAsync;
     tcuGetErrorName *cuGetErrorName;
     tcuGetErrorString *cuGetErrorString;
+    tcuCtxGetDevice *cuCtxGetDevice;
 
     tcuStreamCreate *cuStreamCreate;
     tcuStreamQuery *cuStreamQuery;
@@ -280,6 +281,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuMemcpy2DAsync, tcuMemcpy2DAsync_v2, "cuMemcpy2DAsync_v2");
     LOAD_SYMBOL(cuGetErrorName, tcuGetErrorName, "cuGetErrorName");
     LOAD_SYMBOL(cuGetErrorString, tcuGetErrorString, "cuGetErrorString");
+    LOAD_SYMBOL(cuCtxGetDevice, tcuCtxGetDevice, "cuCtxGetDevice");
 
     LOAD_SYMBOL(cuStreamCreate, tcuStreamCreate, "cuStreamCreate");
     LOAD_SYMBOL(cuStreamQuery, tcuStreamQuery, "cuStreamQuery");
