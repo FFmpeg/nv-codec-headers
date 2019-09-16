@@ -41,22 +41,23 @@
 #define CU_CTX_SCHED_BLOCKING_SYNC 4
 
 typedef int CUdevice;
-typedef void* CUarray;
-typedef void* CUcontext;
-typedef void* CUstream;
-typedef void* CUevent;
-typedef void* CUfunction;
-typedef void* CUmodule;
-typedef void* CUtexObject;
-typedef void* CUmipmappedArray;
-typedef void* CUgraphicsResource;
-typedef void* CUexternalMemory;
-typedef void* CUexternalSemaphore;
 #if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64) || defined(__LP64__)
 typedef unsigned long long CUdeviceptr;
 #else
 typedef unsigned int CUdeviceptr;
 #endif
+typedef unsigned long long CUtexObject;
+
+typedef struct CUarray_st            *CUarray;
+typedef struct CUctx_st              *CUcontext;
+typedef struct CUstream_st           *CUstream;
+typedef struct CUevent_st            *CUevent;
+typedef struct CUfunc_st             *CUfunction;
+typedef struct CUmod_st              *CUmodule;
+typedef struct CUmipmappedArray_st   *CUmipmappedArray;
+typedef struct CUgraphicsResource_st *CUgraphicsResource;
+typedef struct CUextMemory_st        *CUexternalMemory;
+typedef struct CUextSemaphore_st     *CUexternalSemaphore;
 
 typedef enum cudaError_enum {
     CUDA_SUCCESS = 0,
