@@ -42,7 +42,7 @@
 #endif
 
 #define NVDECAPI_MAJOR_VERSION 9
-#define NVDECAPI_MINOR_VERSION 0
+#define NVDECAPI_MINOR_VERSION 1
 
 #define NVDECAPI_VERSION (NVDECAPI_MAJOR_VERSION | (NVDECAPI_MINOR_VERSION << 24))
 
@@ -158,20 +158,21 @@ typedef enum cuvidDecodeStatus_enum
 /**************************************************************************************************************/
 typedef struct _CUVIDDECODECAPS
 {
-    cudaVideoCodec          eCodecType;                 /**< IN: cudaVideoCodec_XXX                                 */
-    cudaVideoChromaFormat   eChromaFormat;              /**< IN: cudaVideoChromaFormat_XXX                          */
-    unsigned int            nBitDepthMinus8;            /**< IN: The Value "BitDepth minus 8"                       */
-    unsigned int            reserved1[3];               /**< Reserved for future use - set to zero                  */
+    cudaVideoCodec          eCodecType;                 /**< IN: cudaVideoCodec_XXX                                             */
+    cudaVideoChromaFormat   eChromaFormat;              /**< IN: cudaVideoChromaFormat_XXX                                      */
+    unsigned int            nBitDepthMinus8;            /**< IN: The Value "BitDepth minus 8"                                   */
+    unsigned int            reserved1[3];               /**< Reserved for future use - set to zero                              */
 
-    unsigned char           bIsSupported;               /**< OUT: 1 if codec supported, 0 if not supported          */
-    unsigned char           reserved2[3];               /**< Reserved for future use - set to zero                  */
-    unsigned int            nMaxWidth;                  /**< OUT: Max supported coded width in pixels               */
-    unsigned int            nMaxHeight;                 /**< OUT: Max supported coded height in pixels              */
+    unsigned char           bIsSupported;               /**< OUT: 1 if codec supported, 0 if not supported                      */
+    unsigned char           reserved2;                  /**< Reserved for future use - set to zero                              */
+    unsigned short          nOutputFormatMask;          /**< OUT: each bit represents corresponding cudaVideoSurfaceFormat enum */
+    unsigned int            nMaxWidth;                  /**< OUT: Max supported coded width in pixels                           */
+    unsigned int            nMaxHeight;                 /**< OUT: Max supported coded height in pixels                          */
     unsigned int            nMaxMBCount;                /**< OUT: Max supported macroblock count
-                                                                  CodedWidth*CodedHeight/256 must be <= nMaxMBCount */
-    unsigned short          nMinWidth;                  /**< OUT: Min supported coded width in pixels               */
-    unsigned short          nMinHeight;                 /**< OUT: Min supported coded height in pixels              */
-    unsigned int            reserved3[11];              /**< Reserved for future use - set to zero                  */
+                                                                  CodedWidth*CodedHeight/256 must be <= nMaxMBCount             */
+    unsigned short          nMinWidth;                  /**< OUT: Min supported coded width in pixels                           */
+    unsigned short          nMinHeight;                 /**< OUT: Min supported coded height in pixels                          */
+    unsigned int            reserved3[11];              /**< Reserved for future use - set to zero                              */
 } CUVIDDECODECAPS;
 
 /**************************************************************************************************************/
@@ -189,7 +190,7 @@ typedef struct _CUVIDDECODECREATEINFO
     tcu_ulong bitDepthMinus8;           /**< IN: The value "BitDepth minus 8"                                               */
     tcu_ulong ulIntraDecodeOnly;        /**< IN: Set 1 only if video has all intra frames (default value is 0). This will
                                              optimize video memory for Intra frames only decoding. The support is limited
-                                             to specific codecs(H264 rightnow), the flag will be ignored for codecs which
+                                             to specific codecs - H264, HEVC, VP9, the flag will be ignored for codecs which
                                              are not supported. However decoding might fail if the flag is enabled in case
                                              of supported codecs for regular bit streams having P and/or B frames.          */
     tcu_ulong ulMaxWidth;               /**< IN: Coded sequence max width in pixels used with reconfigure Decoder           */
