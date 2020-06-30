@@ -1,7 +1,7 @@
 /*
  * This copyright notice applies to this header file only:
  *
- * Copyright (c) 2010-2019 NVIDIA Corporation
+ * Copyright (c) 2010-2020 NVIDIA Corporation
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -41,8 +41,8 @@
 #endif
 #endif
 
-#define NVDECAPI_MAJOR_VERSION 9
-#define NVDECAPI_MINOR_VERSION 1
+#define NVDECAPI_MAJOR_VERSION 10
+#define NVDECAPI_MINOR_VERSION 0
 
 #define NVDECAPI_VERSION (NVDECAPI_MAJOR_VERSION | (NVDECAPI_MINOR_VERSION << 24))
 
@@ -897,6 +897,9 @@ typedef CUresult CUDAAPI tcuvidDecodePicture(CUvideodecoder hDecoder, CUVIDPICPA
 /************************************************************************************************************/
 //! \fn CUresult CUDAAPI cuvidGetDecodeStatus(CUvideodecoder hDecoder, int nPicIdx);
 //! Get the decode status for frame corresponding to nPicIdx
+//! API is supported for Maxwell and above generation GPUs.
+//! API is currently supported for HEVC, H264 and JPEG codecs.
+//! API returns CUDA_ERROR_NOT_SUPPORTED error code for unsupported GPU or codec.
 /************************************************************************************************************/
 typedef CUresult CUDAAPI tcuvidGetDecodeStatus(CUvideodecoder hDecoder, int nPicIdx, CUVIDGETDECODESTATUS* pDecodeStatus);
 
