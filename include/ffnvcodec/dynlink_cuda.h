@@ -59,6 +59,8 @@ typedef struct CUgraphicsResource_st *CUgraphicsResource;
 typedef struct CUextMemory_st        *CUexternalMemory;
 typedef struct CUextSemaphore_st     *CUexternalSemaphore;
 
+typedef struct CUlinkState_st *CUlinkState;
+
 typedef enum cudaError_enum {
     CUDA_SUCCESS = 0,
     CUDA_ERROR_NOT_READY = 600
@@ -155,6 +157,41 @@ typedef enum CUexternalSemaphoreHandleType_enum {
     CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_KMT = 3,
     CU_EXTERNAL_SEMAPHORE_HANDLE_TYPE_D3D12_FENCE      = 4
 } CUexternalSemaphoreHandleType;
+
+typedef enum CUjit_option_enum
+{
+    CU_JIT_MAX_REGISTERS               = 0,
+    CU_JIT_THREADS_PER_BLOCK           = 1,
+    CU_JIT_WALL_TIME                   = 2,
+    CU_JIT_INFO_LOG_BUFFER             = 3,
+    CU_JIT_INFO_LOG_BUFFER_SIZE_BYTES  = 4,
+    CU_JIT_ERROR_LOG_BUFFER            = 5,
+    CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES = 6,
+    CU_JIT_OPTIMIZATION_LEVEL          = 7,
+    CU_JIT_TARGET_FROM_CUCONTEXT       = 8,
+    CU_JIT_TARGET                      = 9,
+    CU_JIT_FALLBACK_STRATEGY           = 10,
+    CU_JIT_GENERATE_DEBUG_INFO         = 11,
+    CU_JIT_LOG_VERBOSE                 = 12,
+    CU_JIT_GENERATE_LINE_INFO          = 13,
+    CU_JIT_CACHE_MODE                  = 14,
+    CU_JIT_NEW_SM3X_OPT                = 15,
+    CU_JIT_FAST_COMPILE                = 16,
+    CU_JIT_GLOBAL_SYMBOL_NAMES         = 17,
+    CU_JIT_GLOBAL_SYMBOL_ADDRESSES     = 18,
+    CU_JIT_GLOBAL_SYMBOL_COUNT         = 19,
+    CU_JIT_NUM_OPTIONS
+} CUjit_option;
+
+typedef enum CUjitInputType_enum
+{
+    CU_JIT_INPUT_CUBIN     = 0,
+    CU_JIT_INPUT_PTX       = 1,
+    CU_JIT_INPUT_FATBINARY = 2,
+    CU_JIT_INPUT_OBJECT    = 3,
+    CU_JIT_INPUT_LIBRARY   = 4,
+    CU_JIT_NUM_INPUT_TYPES
+} CUjitInputType;
 
 #ifndef CU_UUID_HAS_BEEN_DEFINED
 #define CU_UUID_HAS_BEEN_DEFINED
@@ -350,6 +387,10 @@ typedef CUresult CUDAAPI tcuEventQuery(CUevent hEvent);
 typedef CUresult CUDAAPI tcuEventRecord(CUevent hEvent, CUstream hStream);
 
 typedef CUresult CUDAAPI tcuLaunchKernel(CUfunction f, unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ, unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ, unsigned int sharedMemBytes, CUstream hStream, void** kernelParams, void** extra);
+typedef CUresult CUDAAPI tcuLinkCreate(unsigned int  numOptions, CUjit_option* options, void** optionValues, CUlinkState* stateOut);
+typedef CUresult CUDAAPI tcuLinkAddData(CUlinkState state, CUjitInputType type, void* data, size_t size, const char* name, unsigned int numOptions, CUjit_option* options, void** optionValues);
+typedef CUresult CUDAAPI tcuLinkComplete(CUlinkState state, void** cubinOut, size_t* sizeOut);
+typedef CUresult CUDAAPI tcuLinkDestroy(CUlinkState state);
 typedef CUresult CUDAAPI tcuModuleLoadData(CUmodule* module, const void* image);
 typedef CUresult CUDAAPI tcuModuleUnload(CUmodule hmod);
 typedef CUresult CUDAAPI tcuModuleGetFunction(CUfunction* hfunc, CUmodule hmod, const char* name);
