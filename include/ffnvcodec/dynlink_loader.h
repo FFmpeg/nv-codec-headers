@@ -176,6 +176,10 @@ typedef struct CudaFunctions {
     tcuEventRecord *cuEventRecord;
 
     tcuLaunchKernel *cuLaunchKernel;
+    tcuLinkCreate *cuLinkCreate;
+    tcuLinkAddData *cuLinkAddData;
+    tcuLinkComplete *cuLinkComplete;
+    tcuLinkDestroy *cuLinkDestroy;
     tcuModuleLoadData *cuModuleLoadData;
     tcuModuleUnload *cuModuleUnload;
     tcuModuleGetFunction *cuModuleGetFunction;
@@ -309,6 +313,10 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuEventRecord, tcuEventRecord, "cuEventRecord");
 
     LOAD_SYMBOL(cuLaunchKernel, tcuLaunchKernel, "cuLaunchKernel");
+    LOAD_SYMBOL(cuLinkCreate, tcuLinkCreate, "cuLinkCreate");
+    LOAD_SYMBOL(cuLinkAddData, tcuLinkAddData, "cuLinkAddData");
+    LOAD_SYMBOL(cuLinkComplete, tcuLinkComplete, "cuLinkComplete");
+    LOAD_SYMBOL(cuLinkDestroy, tcuLinkDestroy, "cuLinkDestroy");
     LOAD_SYMBOL(cuModuleLoadData, tcuModuleLoadData, "cuModuleLoadData");
     LOAD_SYMBOL(cuModuleUnload, tcuModuleUnload, "cuModuleUnload");
     LOAD_SYMBOL(cuModuleGetFunction, tcuModuleGetFunction, "cuModuleGetFunction");
