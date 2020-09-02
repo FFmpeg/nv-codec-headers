@@ -222,6 +222,7 @@ typedef struct CuvidFunctions {
     tcuvidCtxLock *cuvidCtxLock;
     tcuvidCtxUnlock *cuvidCtxUnlock;
 
+#if !defined(__APPLE__)
     tcuvidCreateVideoSource *cuvidCreateVideoSource;
     tcuvidCreateVideoSourceW *cuvidCreateVideoSourceW;
     tcuvidDestroyVideoSource *cuvidDestroyVideoSource;
@@ -229,6 +230,7 @@ typedef struct CuvidFunctions {
     tcuvidGetVideoSourceState *cuvidGetVideoSourceState;
     tcuvidGetSourceVideoFormat *cuvidGetSourceVideoFormat;
     tcuvidGetSourceAudioFormat *cuvidGetSourceAudioFormat;
+#endif
     tcuvidCreateVideoParser *cuvidCreateVideoParser;
     tcuvidParseVideoData *cuvidParseVideoData;
     tcuvidDestroyVideoParser *cuvidDestroyVideoParser;
@@ -359,6 +361,7 @@ static inline int cuvid_load_functions(CuvidFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuvidCtxLock, tcuvidCtxLock, "cuvidCtxLock");
     LOAD_SYMBOL(cuvidCtxUnlock, tcuvidCtxUnlock, "cuvidCtxUnlock");
 
+#if !defined(__APPLE__)
     LOAD_SYMBOL(cuvidCreateVideoSource, tcuvidCreateVideoSource, "cuvidCreateVideoSource");
     LOAD_SYMBOL(cuvidCreateVideoSourceW, tcuvidCreateVideoSourceW, "cuvidCreateVideoSourceW");
     LOAD_SYMBOL(cuvidDestroyVideoSource, tcuvidDestroyVideoSource, "cuvidDestroyVideoSource");
@@ -366,6 +369,7 @@ static inline int cuvid_load_functions(CuvidFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuvidGetVideoSourceState, tcuvidGetVideoSourceState, "cuvidGetVideoSourceState");
     LOAD_SYMBOL(cuvidGetSourceVideoFormat, tcuvidGetSourceVideoFormat, "cuvidGetSourceVideoFormat");
     LOAD_SYMBOL(cuvidGetSourceAudioFormat, tcuvidGetSourceAudioFormat, "cuvidGetSourceAudioFormat");
+#endif
     LOAD_SYMBOL(cuvidCreateVideoParser, tcuvidCreateVideoParser, "cuvidCreateVideoParser");
     LOAD_SYMBOL(cuvidParseVideoData, tcuvidParseVideoData, "cuvidParseVideoData");
     LOAD_SYMBOL(cuvidDestroyVideoParser, tcuvidDestroyVideoParser, "cuvidDestroyVideoParser");
