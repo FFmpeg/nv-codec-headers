@@ -394,6 +394,7 @@ typedef CUresult CUDAAPI tcuLinkDestroy(CUlinkState state);
 typedef CUresult CUDAAPI tcuModuleLoadData(CUmodule* module, const void* image);
 typedef CUresult CUDAAPI tcuModuleUnload(CUmodule hmod);
 typedef CUresult CUDAAPI tcuModuleGetFunction(CUfunction* hfunc, CUmodule hmod, const char* name);
+typedef CUresult CUDAAPI tcuModuleGetGlobal(CUdeviceptr *dptr, size_t *bytes, CUmodule hmod, const char* name);
 typedef CUresult CUDAAPI tcuTexObjectCreate(CUtexObject* pTexObject, const CUDA_RESOURCE_DESC* pResDesc, const CUDA_TEXTURE_DESC* pTexDesc, const CUDA_RESOURCE_VIEW_DESC* pResViewDesc);
 typedef CUresult CUDAAPI tcuTexObjectDestroy(CUtexObject texObject);
 
