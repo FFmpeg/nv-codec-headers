@@ -183,6 +183,7 @@ typedef struct CudaFunctions {
     tcuModuleLoadData *cuModuleLoadData;
     tcuModuleUnload *cuModuleUnload;
     tcuModuleGetFunction *cuModuleGetFunction;
+    tcuModuleGetGlobal *cuModuleGetGlobal;
     tcuTexObjectCreate *cuTexObjectCreate;
     tcuTexObjectDestroy *cuTexObjectDestroy;
 
@@ -318,6 +319,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuModuleLoadData, tcuModuleLoadData, "cuModuleLoadData");
     LOAD_SYMBOL(cuModuleUnload, tcuModuleUnload, "cuModuleUnload");
     LOAD_SYMBOL(cuModuleGetFunction, tcuModuleGetFunction, "cuModuleGetFunction");
+    LOAD_SYMBOL(cuModuleGetGlobal, tcuModuleGetGlobal, "cuModuleGetGlobal");
     LOAD_SYMBOL(cuTexObjectCreate, tcuTexObjectCreate, "cuTexObjectCreate");
     LOAD_SYMBOL(cuTexObjectDestroy, tcuTexObjectDestroy, "cuTexObjectDestroy");
 
