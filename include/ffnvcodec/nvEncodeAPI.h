@@ -1460,7 +1460,7 @@ typedef struct _NV_ENC_CONFIG
 } NV_ENC_CONFIG;
 
 /** macro for constructing the version field of ::_NV_ENC_CONFIG */
-#define NV_ENC_CONFIG_VER (NVENCAPI_STRUCT_VERSION(7) | ( 1<<31 ))
+#define NV_ENC_CONFIG_VER (NVENCAPI_STRUCT_VERSION(7) | ( 1u<<31 ))
 
 
 /**
@@ -1504,7 +1504,7 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
 } NV_ENC_INITIALIZE_PARAMS;
 
 /** macro for constructing the version field of ::_NV_ENC_INITIALIZE_PARAMS */
-#define NV_ENC_INITIALIZE_PARAMS_VER (NVENCAPI_STRUCT_VERSION(5) | ( 1<<31 ))
+#define NV_ENC_INITIALIZE_PARAMS_VER (NVENCAPI_STRUCT_VERSION(5) | ( 1u<<31 ))
 
 
 /**
@@ -1538,7 +1538,7 @@ typedef struct _NV_ENC_RECONFIGURE_PARAMS
 }NV_ENC_RECONFIGURE_PARAMS;
 
 /** macro for constructing the version field of ::_NV_ENC_RECONFIGURE_PARAMS */
-#define NV_ENC_RECONFIGURE_PARAMS_VER (NVENCAPI_STRUCT_VERSION(1) | ( 1<<31 ))
+#define NV_ENC_RECONFIGURE_PARAMS_VER (NVENCAPI_STRUCT_VERSION(1) | ( 1u<<31 ))
 
 /**
  * \struct _NV_ENC_PRESET_CONFIG
@@ -1553,7 +1553,7 @@ typedef struct _NV_ENC_PRESET_CONFIG
 }NV_ENC_PRESET_CONFIG;
 
 /** macro for constructing the version field of ::_NV_ENC_PRESET_CONFIG */
-#define NV_ENC_PRESET_CONFIG_VER (NVENCAPI_STRUCT_VERSION(4) | ( 1<<31 ))
+#define NV_ENC_PRESET_CONFIG_VER (NVENCAPI_STRUCT_VERSION(4) | ( 1u<<31 ))
 
 
 /**
@@ -1704,7 +1704,7 @@ typedef struct _NV_ENC_PIC_PARAMS
 } NV_ENC_PIC_PARAMS;
 
 /** Macro for constructing the version field of ::_NV_ENC_PIC_PARAMS */
-#define NV_ENC_PIC_PARAMS_VER (NVENCAPI_STRUCT_VERSION(4) | ( 1<<31 ))
+#define NV_ENC_PIC_PARAMS_VER (NVENCAPI_STRUCT_VERSION(4) | ( 1u<<31 ))
 
 
 /**
