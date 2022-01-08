@@ -216,6 +216,15 @@ typedef struct CudaFunctions {
     tcuSignalExternalSemaphoresAsync *cuSignalExternalSemaphoresAsync;
     tcuWaitExternalSemaphoresAsync *cuWaitExternalSemaphoresAsync;
 
+    tcuArray3DCreate *cuArray3DCreate;
+    tcuArrayDestroy *cuArrayDestroy;
+
+    tcuEGLStreamProducerConnect *cuEGLStreamProducerConnect;
+    tcuEGLStreamProducerDisconnect *cuEGLStreamProducerDisconnect;
+    tcuEGLStreamConsumerDisconnect *cuEGLStreamConsumerDisconnect;
+    tcuEGLStreamProducerPresentFrame *cuEGLStreamProducerPresentFrame;
+    tcuEGLStreamProducerReturnFrame *cuEGLStreamProducerReturnFrame;
+
     FFNV_LIB_HANDLE lib;
 } CudaFunctions;
 #else
@@ -360,6 +369,15 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL_OPT(cuDestroyExternalSemaphore, tcuDestroyExternalSemaphore, "cuDestroyExternalSemaphore");
     LOAD_SYMBOL_OPT(cuSignalExternalSemaphoresAsync, tcuSignalExternalSemaphoresAsync, "cuSignalExternalSemaphoresAsync");
     LOAD_SYMBOL_OPT(cuWaitExternalSemaphoresAsync, tcuWaitExternalSemaphoresAsync, "cuWaitExternalSemaphoresAsync");
+
+    LOAD_SYMBOL(cuArray3DCreate, tcuArray3DCreate, "cuArray3DCreate_v2");
+    LOAD_SYMBOL(cuArrayDestroy, tcuArrayDestroy, "cuArrayDestroy");
+
+    LOAD_SYMBOL_OPT(cuEGLStreamProducerConnect, tcuEGLStreamProducerConnect, "cuEGLStreamProducerConnect");
+    LOAD_SYMBOL_OPT(cuEGLStreamProducerDisconnect, tcuEGLStreamProducerDisconnect, "cuEGLStreamProducerDisconnect");
+    LOAD_SYMBOL_OPT(cuEGLStreamConsumerDisconnect, tcuEGLStreamConsumerDisconnect, "cuEGLStreamConsumerDisconnect");
+    LOAD_SYMBOL_OPT(cuEGLStreamProducerPresentFrame, tcuEGLStreamProducerPresentFrame, "cuEGLStreamProducerPresentFrame");
+    LOAD_SYMBOL_OPT(cuEGLStreamProducerReturnFrame, tcuEGLStreamProducerReturnFrame, "cuEGLStreamProducerReturnFrame");
 
     GENERIC_LOAD_FUNC_FINALE(cuda);
 }
