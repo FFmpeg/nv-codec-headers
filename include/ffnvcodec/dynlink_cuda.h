@@ -29,6 +29,7 @@
 #define FFNV_DYNLINK_CUDA_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #define CUDA_VERSION 7050
 
@@ -58,12 +59,15 @@ typedef struct CUmipmappedArray_st   *CUmipmappedArray;
 typedef struct CUgraphicsResource_st *CUgraphicsResource;
 typedef struct CUextMemory_st        *CUexternalMemory;
 typedef struct CUextSemaphore_st     *CUexternalSemaphore;
+typedef struct CUeglStreamConnection_st *CUeglStreamConnection;
 
 typedef struct CUlinkState_st *CUlinkState;
 
 typedef enum cudaError_enum {
     CUDA_SUCCESS = 0,
-    CUDA_ERROR_NOT_READY = 600
+    CUDA_ERROR_NOT_READY = 600,
+    CUDA_ERROR_LAUNCH_TIMEOUT = 702,
+    CUDA_ERROR_UNKNOWN = 999
 } CUresult;
 
 /**
@@ -197,6 +201,21 @@ typedef enum CUjitInputType_enum
     CU_JIT_NUM_INPUT_TYPES
 } CUjitInputType;
 
+typedef enum CUeglFrameType
+{
+    CU_EGL_FRAME_TYPE_ARRAY = 0,
+    CU_EGL_FRAME_TYPE_PITCH = 1,
+} CUeglFrameType;
+
+typedef enum CUeglColorFormat
+{
+    CU_EGL_COLOR_FORMAT_YUV420_PLANAR = 0x00,
+    CU_EGL_COLOR_FORMAT_YUV420_SEMIPLANAR = 0x01,
+    CU_EGL_COLOR_FORMAT_YVU420_SEMIPLANAR = 0x15,
+    CU_EGL_COLOR_FORMAT_Y10V10U10_420_SEMIPLANAR = 0x17,
+    CU_EGL_COLOR_FORMAT_Y12V12U12_420_SEMIPLANAR = 0x19,
+} CUeglColorFormat;
+
 #ifndef CU_UUID_HAS_BEEN_DEFINED
 #define CU_UUID_HAS_BEEN_DEFINED
 typedef struct CUuuid_st {
@@ -273,6 +292,12 @@ typedef struct CUDA_RESOURCE_VIEW_DESC_st CUDA_RESOURCE_VIEW_DESC;
 
 typedef unsigned int GLenum;
 typedef unsigned int GLuint;
+/*
+ * Prefix type name to avoid collisions. Clients using these types
+ * will include the real headers with real definitions.
+ */
+typedef int32_t ffnv_EGLint;
+typedef void *ffnv_EGLStreamKHR;
 
 typedef enum CUGLDeviceList_enum {
     CU_GL_DEVICE_LIST_ALL = 1,
@@ -343,6 +368,23 @@ typedef struct CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC_st {
     unsigned int numLevels;
     unsigned int reserved[16];
 } CUDA_EXTERNAL_MEMORY_MIPMAPPED_ARRAY_DESC;
+
+#define CU_EGL_FRAME_MAX_PLANES 3
+typedef struct CUeglFrame_st {
+    union {
+        CUarray pArray[CU_EGL_FRAME_MAX_PLANES];
+        void* pPitch[CU_EGL_FRAME_MAX_PLANES];
+    } frame;
+    unsigned int width;
+    unsigned int height;
+    unsigned int depth;
+    unsigned int pitch;
+    unsigned int planeCount;
+    unsigned int numChannels;
+    CUeglFrameType frameType;
+    CUeglColorFormat eglColorFormat;
+    CUarray_format cuFormat;
+} CUeglFrame;
 
 #define CU_STREAM_NON_BLOCKING 1
 #define CU_EVENT_BLOCKING_SYNC 1
@@ -429,4 +471,13 @@ typedef CUresult CUDAAPI tcuImportExternalSemaphore(CUexternalSemaphore* extSem_
 typedef CUresult CUDAAPI tcuDestroyExternalSemaphore(CUexternalSemaphore extSem);
 typedef CUresult CUDAAPI tcuSignalExternalSemaphoresAsync(const CUexternalSemaphore* extSemArray, const CUDA_EXTERNAL_SEMAPHORE_SIGNAL_PARAMS* paramsArray, unsigned int numExtSems, CUstream stream);
 typedef CUresult CUDAAPI tcuWaitExternalSemaphoresAsync(const CUexternalSemaphore* extSemArray, const CUDA_EXTERNAL_SEMAPHORE_WAIT_PARAMS* paramsArray, unsigned int numExtSems, CUstream stream);
+
+typedef CUresult CUDAAPI tcuArray3DCreate(CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR* pAllocateArray);
+typedef CUresult CUDAAPI tcuArrayDestroy(CUarray hArray);
+
+typedef CUresult CUDAAPI tcuEGLStreamProducerConnect (CUeglStreamConnection* conn, ffnv_EGLStreamKHR stream, ffnv_EGLint width, ffnv_EGLint height);
+typedef CUresult CUDAAPI tcuEGLStreamProducerDisconnect (CUeglStreamConnection* conn);
+typedef CUresult CUDAAPI tcuEGLStreamConsumerDisconnect (CUeglStreamConnection* conn);
+typedef CUresult CUDAAPI tcuEGLStreamProducerPresentFrame (CUeglStreamConnection* conn, CUeglFrame eglframe, CUstream* pStream);
+typedef CUresult CUDAAPI tcuEGLStreamProducerReturnFrame (CUeglStreamConnection* conn, CUeglFrame* eglframe, CUstream* pStream);
 #endif
