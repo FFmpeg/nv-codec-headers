@@ -475,9 +475,9 @@ typedef CUresult CUDAAPI tcuWaitExternalSemaphoresAsync(const CUexternalSemaphor
 typedef CUresult CUDAAPI tcuArray3DCreate(CUarray *pHandle, const CUDA_ARRAY3D_DESCRIPTOR* pAllocateArray);
 typedef CUresult CUDAAPI tcuArrayDestroy(CUarray hArray);
 
-typedef CUresult CUDAAPI tcuEGLStreamProducerConnect (CUeglStreamConnection* conn, ffnv_EGLStreamKHR stream, ffnv_EGLint width, ffnv_EGLint height);
-typedef CUresult CUDAAPI tcuEGLStreamProducerDisconnect (CUeglStreamConnection* conn);
-typedef CUresult CUDAAPI tcuEGLStreamConsumerDisconnect (CUeglStreamConnection* conn);
-typedef CUresult CUDAAPI tcuEGLStreamProducerPresentFrame (CUeglStreamConnection* conn, CUeglFrame eglframe, CUstream* pStream);
-typedef CUresult CUDAAPI tcuEGLStreamProducerReturnFrame (CUeglStreamConnection* conn, CUeglFrame* eglframe, CUstream* pStream);
+typedef CUresult CUDAAPI tcuEGLStreamProducerConnect(CUeglStreamConnection* conn, ffnv_EGLStreamKHR stream, ffnv_EGLint width, ffnv_EGLint height);
+typedef CUresult CUDAAPI tcuEGLStreamProducerDisconnect(CUeglStreamConnection* conn);
+typedef CUresult CUDAAPI tcuEGLStreamConsumerDisconnect(CUeglStreamConnection* conn);
+typedef CUresult CUDAAPI tcuEGLStreamProducerPresentFrame(CUeglStreamConnection* conn, CUeglFrame eglframe, CUstream* pStream);
+typedef CUresult CUDAAPI tcuEGLStreamProducerReturnFrame(CUeglStreamConnection* conn, CUeglFrame* eglframe, CUstream* pStream);
 #endif
