@@ -202,6 +202,7 @@ typedef struct CudaFunctions {
     tcuGraphicsMapResources *cuGraphicsMapResources;
     tcuGraphicsUnmapResources *cuGraphicsUnmapResources;
     tcuGraphicsSubResourceGetMappedArray *cuGraphicsSubResourceGetMappedArray;
+    tcuGraphicsResourceGetMappedPointer *cuGraphicsResourceGetMappedPointer;
 
     tcuImportExternalMemory *cuImportExternalMemory;
     tcuDestroyExternalMemory *cuDestroyExternalMemory;
@@ -224,6 +225,12 @@ typedef struct CudaFunctions {
     tcuEGLStreamConsumerDisconnect *cuEGLStreamConsumerDisconnect;
     tcuEGLStreamProducerPresentFrame *cuEGLStreamProducerPresentFrame;
     tcuEGLStreamProducerReturnFrame *cuEGLStreamProducerReturnFrame;
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+    tcuD3D11GetDevice *cuD3D11GetDevice;
+    tcuD3D11GetDevices *cuD3D11GetDevices;
+    tcuGraphicsD3D11RegisterResource *cuGraphicsD3D11RegisterResource;
+#endif
 
     FFNV_LIB_HANDLE lib;
 } CudaFunctions;
@@ -358,6 +365,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuGraphicsMapResources, tcuGraphicsMapResources, "cuGraphicsMapResources");
     LOAD_SYMBOL(cuGraphicsUnmapResources, tcuGraphicsUnmapResources, "cuGraphicsUnmapResources");
     LOAD_SYMBOL(cuGraphicsSubResourceGetMappedArray, tcuGraphicsSubResourceGetMappedArray, "cuGraphicsSubResourceGetMappedArray");
+    LOAD_SYMBOL(cuGraphicsResourceGetMappedPointer, tcuGraphicsResourceGetMappedPointer, "cuGraphicsResourceGetMappedPointer_v2");
 
     LOAD_SYMBOL_OPT(cuDeviceGetUuid, tcuDeviceGetUuid, "cuDeviceGetUuid");
     LOAD_SYMBOL_OPT(cuImportExternalMemory, tcuImportExternalMemory, "cuImportExternalMemory");
@@ -380,6 +388,12 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL_OPT(cuEGLStreamConsumerDisconnect, tcuEGLStreamConsumerDisconnect, "cuEGLStreamConsumerDisconnect");
     LOAD_SYMBOL_OPT(cuEGLStreamProducerPresentFrame, tcuEGLStreamProducerPresentFrame, "cuEGLStreamProducerPresentFrame");
     LOAD_SYMBOL_OPT(cuEGLStreamProducerReturnFrame, tcuEGLStreamProducerReturnFrame, "cuEGLStreamProducerReturnFrame");
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+    LOAD_SYMBOL(cuD3D11GetDevice, tcuD3D11GetDevice, "cuD3D11GetDevice");
+    LOAD_SYMBOL(cuD3D11GetDevices, tcuD3D11GetDevices, "cuD3D11GetDevices");
+    LOAD_SYMBOL(cuGraphicsD3D11RegisterResource, tcuGraphicsD3D11RegisterResource, "cuGraphicsD3D11RegisterResource");
+#endif
 
     GENERIC_LOAD_FUNC_FINALE(cuda);
 }
