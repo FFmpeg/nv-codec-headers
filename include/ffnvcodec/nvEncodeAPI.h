@@ -208,10 +208,6 @@ static const GUID NV_ENC_HEVC_PROFILE_FREXT_GUID =
 static const GUID NV_ENC_AV1_PROFILE_MAIN_GUID =
 { 0x5f2a39f5, 0xf14e, 0x4f95, { 0x9a, 0x9e, 0xb7, 0x6d, 0x56, 0x8f, 0xcf, 0x97 } };
 
-// {7c718f81-abb7-4a0e-afe4-c88bab957997}
-static const GUID NV_ENC_AV1_PROFILE_HIGH_GUID =
-{ 0x7c718f81, 0xabb7, 0x4a0e, { 0xaf, 0xe4, 0xc8, 0x8b, 0xab, 0x95, 0x79, 0x97 } };
-
 // =========================================================================================
 // *   Preset GUIDS supported by the NvEncodeAPI interface.
 // =========================================================================================
