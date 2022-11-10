@@ -137,10 +137,6 @@ typedef void* NV_ENC_CUSTREAM_PTR;          /**< Pointer to CUstream*/
 #define NV_ENC_DEPRECATED __declspec(deprecated("WILL BE REMOVED IN A FUTURE VIDEO CODEC SDK VERSION"))
 #endif
 
-// All use of the AV1 encode structures in the source code is guarded by the compilation variable
-// below. Set it to 0 to disable and hide the AV1 driver code.
-#define NVENCAPI_AV1_STRUCTURES_DEFINED  1
-
 // =========================================================================================
 // Encode Codec GUIDS supported by the NvEncodeAPI interface.
 // =========================================================================================
@@ -1463,8 +1459,8 @@ typedef struct _NV_ENC_QP
                                                                                             Emphasis Level can be assigned any value specified in enum NV_ENC_EMPHASIS_MAP_LEVEL.
                                                                                             Emphasis Level Map is used to specify regions to be encoded at varying levels of quality.
                                                                                             The hardware encoder adjusts the quantization within the image as per the provided emphasis map,
-                                                                                            by adjusting the quantization parameter (QP) assigned to each macroblock. This adjustment is commonly called “Delta QP”.
-                                                                                            The adjustment depends on the absolute QP decided by the rate control algorithm, and is applied after the rate control has decided each macroblock’s QP.
+                                                                                            by adjusting the quantization parameter (QP) assigned to each macroblock. This adjustment is commonly called "Delta QP".
+                                                                                            The adjustment depends on the absolute QP decided by the rate control algorithm, and is applied after the rate control has decided each macroblock's QP.
                                                                                             Since the Delta QP overrides rate control, enabling Emphasis Level Map may violate bitrate and VBV buffer size constraints.
                                                                                             Emphasis Level Map is useful in situations where client has a priori knowledge of the image complexity (e.g. via use of NVFBC's Classification feature) and encoding those high-complexity areas at higher quality (lower QP) is important, even at the possible cost of violating bitrate/VBV buffer size constraints
                                                                                             This feature is not supported when AQ( Spatial/Temporal) is enabled.
@@ -1980,8 +1976,8 @@ typedef struct _NV_ENC_INITIALIZE_PARAMS
     GUID                                       presetGUID;                      /**< [in]: Specifies the preset for encoding. If the preset GUID is set then , the preset configuration will be applied before any other parameter. */
     uint32_t                                   encodeWidth;                     /**< [in]: Specifies the encode width. If not set ::NvEncInitializeEncoder() API will fail. */
     uint32_t                                   encodeHeight;                    /**< [in]: Specifies the encode height. If not set ::NvEncInitializeEncoder() API will fail. */
-    uint32_t                                   darWidth;                        /**< [in]: Specifies the display aspect ratio Width. */
-    uint32_t                                   darHeight;                       /**< [in]: Specifies the display aspect ratio height. */
+    uint32_t                                   darWidth;                        /**< [in]: Specifies the display aspect ratio width (H264/HEVC) or the render width (AV1). */
+    uint32_t                                   darHeight;                       /**< [in]: Specifies the display aspect ratio height (H264/HEVC) or the render height (AV1). */
     uint32_t                                   frameRateNum;                    /**< [in]: Specifies the numerator for frame rate used for encoding in frames per second ( Frame rate = frameRateNum / frameRateDen ). */
     uint32_t                                   frameRateDen;                    /**< [in]: Specifies the denominator for frame rate used for encoding in frames per second ( Frame rate = frameRateNum / frameRateDen ). */
     uint32_t                                   enableEncodeAsync;               /**< [in]: Set this to 1 to enable asynchronous mode and is expected to use events to get picture completion notification. */
