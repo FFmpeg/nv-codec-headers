@@ -217,6 +217,7 @@ typedef struct CudaFunctions {
     tcuSignalExternalSemaphoresAsync *cuSignalExternalSemaphoresAsync;
     tcuWaitExternalSemaphoresAsync *cuWaitExternalSemaphoresAsync;
 
+    tcuArrayCreate *cuArrayCreate;
     tcuArray3DCreate *cuArray3DCreate;
     tcuArrayDestroy *cuArrayDestroy;
 
@@ -380,6 +381,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL_OPT(cuSignalExternalSemaphoresAsync, tcuSignalExternalSemaphoresAsync, "cuSignalExternalSemaphoresAsync");
     LOAD_SYMBOL_OPT(cuWaitExternalSemaphoresAsync, tcuWaitExternalSemaphoresAsync, "cuWaitExternalSemaphoresAsync");
 
+    LOAD_SYMBOL(cuArrayCreate, tcuArrayCreate, "cuArrayCreate_v2");
     LOAD_SYMBOL(cuArray3DCreate, tcuArray3DCreate, "cuArray3DCreate_v2");
     LOAD_SYMBOL(cuArrayDestroy, tcuArrayDestroy, "cuArrayDestroy");
 
