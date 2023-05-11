@@ -401,9 +401,16 @@ typedef struct CUeglFrame_st {
     CUarray_format cuFormat;
 } CUeglFrame;
 
+#define CU_STREAM_DEFAULT      0
 #define CU_STREAM_NON_BLOCKING 1
-#define CU_EVENT_BLOCKING_SYNC 1
+
+#define CU_EVENT_DEFAULT        0
+#define CU_EVENT_BLOCKING_SYNC  1
 #define CU_EVENT_DISABLE_TIMING 2
+
+#define CU_EVENT_WAIT_DEFAULT  0
+#define CU_EVENT_WAIT_EXTERNAL 1
+
 #define CU_TRSF_READ_AS_INTEGER 1
 
 typedef void CUDAAPI CUstreamCallback(CUstream hStream, CUresult status, void *userdata);
@@ -454,6 +461,7 @@ typedef CUresult CUDAAPI tcuStreamQuery(CUstream hStream);
 typedef CUresult CUDAAPI tcuStreamSynchronize(CUstream hStream);
 typedef CUresult CUDAAPI tcuStreamDestroy_v2(CUstream hStream);
 typedef CUresult CUDAAPI tcuStreamAddCallback(CUstream hStream, CUstreamCallback *callback, void *userdata, unsigned int flags);
+typedef CUresult CUDAAPI tcuStreamWaitEvent(CUstream hStream, CUevent hEvent, unsigned int flags);
 typedef CUresult CUDAAPI tcuEventCreate(CUevent *phEvent, unsigned int flags);
 typedef CUresult CUDAAPI tcuEventDestroy_v2(CUevent hEvent);
 typedef CUresult CUDAAPI tcuEventSynchronize(CUevent hEvent);
