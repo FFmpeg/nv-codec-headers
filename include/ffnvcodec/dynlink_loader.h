@@ -182,6 +182,7 @@ typedef struct CudaFunctions {
     tcuStreamSynchronize *cuStreamSynchronize;
     tcuStreamDestroy_v2 *cuStreamDestroy;
     tcuStreamAddCallback *cuStreamAddCallback;
+    tcuStreamWaitEvent *cuStreamWaitEvent;
     tcuEventCreate *cuEventCreate;
     tcuEventDestroy_v2 *cuEventDestroy;
     tcuEventSynchronize *cuEventSynchronize;
@@ -346,6 +347,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuStreamSynchronize, tcuStreamSynchronize, "cuStreamSynchronize");
     LOAD_SYMBOL(cuStreamDestroy, tcuStreamDestroy_v2, "cuStreamDestroy_v2");
     LOAD_SYMBOL(cuStreamAddCallback, tcuStreamAddCallback, "cuStreamAddCallback");
+    LOAD_SYMBOL(cuStreamWaitEvent, tcuStreamWaitEvent, "cuStreamWaitEvent");
     LOAD_SYMBOL(cuEventCreate, tcuEventCreate, "cuEventCreate");
     LOAD_SYMBOL(cuEventDestroy, tcuEventDestroy_v2, "cuEventDestroy_v2");
     LOAD_SYMBOL(cuEventSynchronize, tcuEventSynchronize, "cuEventSynchronize");
