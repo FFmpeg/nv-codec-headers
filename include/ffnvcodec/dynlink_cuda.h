@@ -416,6 +416,7 @@ typedef struct CUeglFrame_st {
 typedef void CUDAAPI CUstreamCallback(CUstream hStream, CUresult status, void *userdata);
 
 typedef CUresult CUDAAPI tcuInit(unsigned int Flags);
+typedef CUresult CUDAAPI tcuDriverGetVersion(int *driverVersion);
 typedef CUresult CUDAAPI tcuDeviceGetCount(int *count);
 typedef CUresult CUDAAPI tcuDeviceGet(CUdevice *device, int ordinal);
 typedef CUresult CUDAAPI tcuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, CUdevice dev);
