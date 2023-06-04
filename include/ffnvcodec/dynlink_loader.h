@@ -137,6 +137,7 @@ error:                              \
 #ifdef FFNV_DYNLINK_CUDA_H
 typedef struct CudaFunctions {
     tcuInit *cuInit;
+    tcuDriverGetVersion *cuDriverGetVersion;
     tcuDeviceGetCount *cuDeviceGetCount;
     tcuDeviceGet *cuDeviceGet;
     tcuDeviceGetAttribute *cuDeviceGetAttribute;
@@ -307,6 +308,7 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     GENERIC_LOAD_FUNC_PREAMBLE(CudaFunctions, cuda, CUDA_LIBNAME);
 
     LOAD_SYMBOL(cuInit, tcuInit, "cuInit");
+    LOAD_SYMBOL(cuDriverGetVersion, tcuDriverGetVersion, "cuDriverGetVersion");
     LOAD_SYMBOL(cuDeviceGetCount, tcuDeviceGetCount, "cuDeviceGetCount");
     LOAD_SYMBOL(cuDeviceGet, tcuDeviceGet, "cuDeviceGet");
     LOAD_SYMBOL(cuDeviceGetAttribute, tcuDeviceGetAttribute, "cuDeviceGetAttribute");
