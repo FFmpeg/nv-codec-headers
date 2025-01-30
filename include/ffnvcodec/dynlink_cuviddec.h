@@ -40,8 +40,8 @@
 #endif
 #endif
 
-#define NVDECAPI_MAJOR_VERSION 12
-#define NVDECAPI_MINOR_VERSION 2
+#define NVDECAPI_MAJOR_VERSION 13
+#define NVDECAPI_MINOR_VERSION 0
 
 #define NVDECAPI_VERSION (NVDECAPI_MAJOR_VERSION | (NVDECAPI_MINOR_VERSION << 24))
 
@@ -96,6 +96,9 @@ typedef enum cudaVideoSurfaceFormat_enum {
                                                  Can be used for 10 bit(6LSB bits 0), 12 bit (4LSB bits 0)      */
     cudaVideoSurfaceFormat_YUV444=2,        /**< Planar YUV [Y plane followed by U and V planes]                */
     cudaVideoSurfaceFormat_YUV444_16Bit=3,  /**< 16 bit Planar YUV [Y plane followed by U and V planes].
+                                                 Can be used for 10 bit(6LSB bits 0), 12 bit (4LSB bits 0)      */
+    cudaVideoSurfaceFormat_NV16=4,          /**< Semi-Planar YUV 422 [Y plane followed by interleaved UV plane] */
+    cudaVideoSurfaceFormat_P216=5           /**< 16 bit Semi-Planar YUV 422[Y plane followed by interleaved UV plane].
                                                  Can be used for 10 bit(6LSB bits 0), 12 bit (4LSB bits 0)      */
 } cudaVideoSurfaceFormat;
 
@@ -320,10 +323,10 @@ typedef struct _CUVIDH264PICPARAMS
     int delta_pic_order_always_zero_flag;
     int frame_mbs_only_flag;
     int direct_8x8_inference_flag;
-    int num_ref_frames;             // NOTE: shall meet level 4.1 restrictions
+    int num_ref_frames;
     unsigned char residual_colour_transform_flag;
-    unsigned char bit_depth_luma_minus8;    // Must be 0 (only 8-bit supported)
-    unsigned char bit_depth_chroma_minus8;  // Must be 0 (only 8-bit supported)
+    unsigned char bit_depth_luma_minus8;
+    unsigned char bit_depth_chroma_minus8;
     unsigned char qpprime_y_zero_transform_bypass_flag;
     // PPS
     int entropy_coding_mode_flag;
@@ -344,7 +347,7 @@ typedef struct _CUVIDH264PICPARAMS
     int frame_num;
     int CurrFieldOrderCnt[2];
     // DPB
-    CUVIDH264DPBENTRY dpb[16];          // List of reference frames within the DPB
+    CUVIDH264DPBENTRY dpb[16];                      // List of reference frames within the DPB
     // Quantization Matrices (raster-order)
     unsigned char WeightScale4x4[6][16];
     unsigned char WeightScale8x8[2][64];
@@ -359,7 +362,10 @@ typedef struct _CUVIDH264PICPARAMS
         unsigned long long slice_group_map_addr;
         const unsigned char *pMb2SliceGroupMap;
     } fmo;
-    unsigned int Reserved[12];
+    unsigned int mb_adaptive_frame_field_flag : 2;  // bit 0 represent SPS flag mb_adaptive_frame_field_flag
+                                                    // if bit 1 is not set, flag is ignored. Bit 1 is set to maintain backward compatibility
+    unsigned int Reserved1 : 30;
+    unsigned int Reserved[11];
     // SVC/MVC
     union
     {
@@ -487,7 +493,24 @@ typedef struct _CUVIDVC1PICPARAMS
 /***********************************************************/
 typedef struct _CUVIDJPEGPICPARAMS
 {
-    int Reserved;
+    unsigned char numComponents;
+    unsigned char bitDepth;
+    unsigned char quantizationTableSelector[4];
+    unsigned int scanOffset[4];
+    unsigned int scanSize[4];
+
+    unsigned short restartInterval;
+    unsigned char componentIdentifier[4];
+
+    unsigned char hasQMatrix;
+    unsigned char hasHuffman;
+    unsigned short quantvals[4][64];
+
+    unsigned char bits_ac[4][16];
+    unsigned char table_ac[4][256]; // there can only be max of 162 ac symbols
+
+    unsigned char bits_dc[4][16];
+    unsigned char table_dc[4][256];  // there can only be max of 12 dc symbols
 } CUVIDJPEGPICPARAMS;
 
 

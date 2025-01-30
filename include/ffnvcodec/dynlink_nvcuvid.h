@@ -502,8 +502,11 @@ typedef struct _CUVIDPARSERPARAMS
                                                      IN: call pfnDecodePicture even if picture bitstream is fully corrupted) */
     unsigned int ulMaxDisplayDelay;             /**< IN: Max display queue delay (improves pipelining of decode with display)
                                                          0=no delay (recommended values: 2..4)                               */
-    unsigned int bAnnexb : 1;                   /**< IN: AV1 annexB stream                                                   */
-    unsigned int uReserved : 31;                /**< Reserved for future use - set to zero                                   */
+    unsigned int bAnnexb         : 1;           /**< IN: AV1 annexB stream                                                   */
+    unsigned int bMemoryOptimize : 1;           /**< IN: Utilize minimum picIdx from dpb to allow memory saving at the
+                                                         decoder layer, use cuvidReconfigureDecoder() to increase the
+                                                         decode surfaces if needed  (perf may get impacted)                  */
+    unsigned int uReserved       : 30;          /**< Reserved for future use - set to zero                                   */
     unsigned int uReserved1[4];                 /**< IN: Reserved for future use - set to 0                                  */
     void *pUserData;                            /**< IN: User data for callbacks                                             */
     PFNVIDSEQUENCECALLBACK pfnSequenceCallback; /**< IN: Called before decoding frames and/or whenever there is a fmt change */
