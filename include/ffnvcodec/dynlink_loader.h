@@ -33,6 +33,7 @@
 #include "dynlink_cuda.h"
 #include "dynlink_nvcuvid.h"
 #include "nvEncodeAPI.h"
+#include "dynlink_nvml.h"
 
 #if defined(_WIN32) && (!defined(FFNV_LOAD_FUNC) || !defined(FFNV_SYM_FUNC) || !defined(FFNV_LIB_HANDLE))
 # include <windows.h>
@@ -49,6 +50,7 @@
 #if defined(_WIN32) || defined(__CYGWIN__)
 # define CUDA_LIBNAME "nvcuda.dll"
 # define NVCUVID_LIBNAME "nvcuvid.dll"
+# define NVML_LIBNAME "nvml.dll"
 # if defined(_WIN64) || defined(__CYGWIN64__)
 #  if defined(_M_ARM64) || defined(__aarch64__)
 #   define NVENC_LIBNAME "nvEncodeAPI.dll"
@@ -62,6 +64,7 @@
 # define CUDA_LIBNAME "libcuda.so.1"
 # define NVCUVID_LIBNAME "libnvcuvid.so.1"
 # define NVENC_LIBNAME "libnvidia-encode.so.1"
+# define NVML_LIBNAME "libnvidia-ml.so.1"
 #endif
 
 #if !defined(FFNV_LOAD_FUNC) || !defined(FFNV_SYM_FUNC)
@@ -93,6 +96,16 @@
         FFNV_DEBUG_LOG_FUNC(logctx, "Loaded lib: %s\n", path); \
     } while (0)
 
+#define LOAD_LIBRARY_OPT(l, path)                                           \
+    do {                                                                    \
+        if (!((l) = FFNV_LOAD_FUNC(path))) {                                \
+            FFNV_DEBUG_LOG_FUNC(logctx, "Cannot load optional %s\n", path); \
+            ret = -1;                                                       \
+            goto error;                                                     \
+        }                                                                   \
+        FFNV_DEBUG_LOG_FUNC(logctx, "Loaded lib: %s\n", path);              \
+    } while (0)
+
 #define LOAD_SYMBOL(fun, tp, symbol)                             \
     do {                                                         \
         if (!((f->fun) = (tp*)FFNV_SYM_FUNC(f->lib, symbol))) {  \
@@ -112,7 +125,7 @@
         }                                                                     \
     } while (0)
 
-#define GENERIC_LOAD_FUNC_PREAMBLE(T, n, N)     \
+#define GENERIC_LOAD_FUNC_PREAMBLE_NOLIB(T, n)  \
     T *f;                                       \
     int ret;                                    \
                                                 \
@@ -120,8 +133,10 @@
                                                 \
     f = *functions = (T*)calloc(1, sizeof(*f)); \
     if (!f)                                     \
-        return -1;                              \
-                                                \
+        return -1;
+
+#define GENERIC_LOAD_FUNC_PREAMBLE(T, n, N)     \
+    GENERIC_LOAD_FUNC_PREAMBLE_NOLIB(T, n)      \
     LOAD_LIBRARY(f->lib, N);
 
 #define GENERIC_LOAD_FUNC_FINALE(n) \
@@ -307,6 +322,21 @@ typedef struct NvencFunctions {
     FFNV_LIB_HANDLE lib;
 } NvencFunctions;
 
+#ifdef FFNV_DYNLINK_NVML_H
+typedef struct NvmlFunctions {
+    tnvmlInit_v2 *nvmlInit;
+    tnvmlInitWithFlags *nvmlInitWithFlags;
+    tnvmlShutdown *nvmlShutdown;
+    tnvmlErrorString *nvmlErrorString;
+    tnvmlSystemGetDriverVersion *nvmlSystemGetDriverVersion;
+    tnvmlSystemGetNVMLVersion *nvmlSystemGetNVMLVersion;
+
+    FFNV_LIB_HANDLE lib;
+} NvmlFunctions;
+#else
+typedef struct NvmlFunctions NvmlFunctions;
+#endif
+
 #ifdef FFNV_DYNLINK_CUDA_H
 static inline void cuda_free_functions(CudaFunctions **functions)
 {
@@ -323,6 +353,13 @@ static inline void nvenc_free_functions(NvencFunctions **functions)
 {
     GENERIC_FREE_FUNC();
 }
+
+#ifdef FFNV_DYNLINK_NVML_H
+static inline void nvml_free_functions(NvmlFunctions **functions)
+{
+    GENERIC_FREE_FUNC();
+}
+#endif
 
 #ifdef FFNV_DYNLINK_CUDA_H
 static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
@@ -501,14 +538,34 @@ static inline int nvenc_load_functions(NvencFunctions **functions, void *logctx)
     GENERIC_LOAD_FUNC_FINALE(nvenc);
 }
 
+#ifdef FFNV_DYNLINK_NVML_H
+static inline int nvml_load_functions(NvmlFunctions **functions, void *logctx)
+{
+    GENERIC_LOAD_FUNC_PREAMBLE_NOLIB(NvmlFunctions, nvml);
+    LOAD_LIBRARY_OPT(f->lib, NVML_LIBNAME);
+
+    LOAD_SYMBOL(nvmlInit, tnvmlInit_v2, "nvmlInit_v2");
+    LOAD_SYMBOL_OPT(nvmlInitWithFlags, tnvmlInitWithFlags, "nvmlInitWithFlags");
+    LOAD_SYMBOL(nvmlShutdown, tnvmlShutdown, "nvmlShutdown");
+    LOAD_SYMBOL(nvmlErrorString, tnvmlErrorString, "nvmlErrorString");
+    LOAD_SYMBOL(nvmlSystemGetDriverVersion, tnvmlSystemGetDriverVersion, "nvmlSystemGetDriverVersion");
+    LOAD_SYMBOL(nvmlSystemGetNVMLVersion, tnvmlSystemGetNVMLVersion, "nvmlSystemGetNVMLVersion");
+
+    GENERIC_LOAD_FUNC_FINALE(nvml);
+}
+#endif
+
 #undef GENERIC_LOAD_FUNC_PREAMBLE
+#undef GENERIC_LOAD_FUNC_PREAMBLE_NOLIB
 #undef LOAD_LIBRARY
+#undef LOAD_LIBRARY_OPT
 #undef LOAD_SYMBOL
 #undef GENERIC_LOAD_FUNC_FINALE
 #undef GENERIC_FREE_FUNC
 #undef CUDA_LIBNAME
 #undef NVCUVID_LIBNAME
 #undef NVENC_LIBNAME
+#undef NVML_LIBNAME
 
 #endif
 
