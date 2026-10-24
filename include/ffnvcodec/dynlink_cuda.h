@@ -66,6 +66,7 @@ typedef struct CUlinkState_st *CUlinkState;
 typedef enum cudaError_enum {
     CUDA_SUCCESS = 0,
     CUDA_ERROR_INVALID_VALUE = 1,
+    CUDA_ERROR_INVALID_GRAPHICS_CONTEXT = 219,
     CUDA_ERROR_NOT_READY = 600,
     CUDA_ERROR_LAUNCH_TIMEOUT = 702,
     CUDA_ERROR_UNKNOWN = 999
@@ -383,6 +384,11 @@ typedef struct CUDA_ARRAY_DESCRIPTOR_st {
 #define CUDA_ARRAY3D_SURFACE_LDST 0x02
 #define CUDA_ARRAY3D_VIDEO_ENCODE_DECODE 0x100
 
+#define CU_MEMHOSTREGISTER_PORTABLE  0x01
+#define CU_MEMHOSTREGISTER_DEVICEMAP 0x02
+#define CU_MEMHOSTREGISTER_IOMEMORY  0x04
+#define CU_MEMHOSTREGISTER_READ_ONLY 0x08
+
 typedef struct CUDA_ARRAY3D_DESCRIPTOR_st {
     size_t Width;
     size_t Height;
@@ -464,6 +470,8 @@ typedef CUresult CUDAAPI tcuMemsetD2D32Async(CUdeviceptr dstDevice, size_t dstPi
 typedef CUresult CUDAAPI tcuMemFree_v2(CUdeviceptr dptr);
 typedef CUresult CUDAAPI tcuMemHostAlloc(void **pp, size_t bytesize, unsigned int flags);
 typedef CUresult CUDAAPI tcuMemFreeHost(void *p);
+typedef CUresult CUDAAPI tcuMemHostRegister_v2(void *p, size_t bytesize, unsigned int Flags);
+typedef CUresult CUDAAPI tcuMemHostUnregister(void *p);
 typedef CUresult CUDAAPI tcuMemAllocAsync(CUdeviceptr *dptr, size_t bytesize, CUstream hStream);
 typedef CUresult CUDAAPI tcuMemFreeAsync(CUdeviceptr dptr, CUstream hStream);
 typedef CUresult CUDAAPI tcuMemcpy(CUdeviceptr dst, CUdeviceptr src, size_t bytesize);

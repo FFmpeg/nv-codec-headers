@@ -187,6 +187,8 @@ typedef struct CudaFunctions {
     tcuMemFree_v2 *cuMemFree;
     tcuMemHostAlloc *cuMemHostAlloc;
     tcuMemFreeHost *cuMemFreeHost;
+    tcuMemHostRegister_v2 *cuMemHostRegister;
+    tcuMemHostUnregister *cuMemHostUnregister;
     tcuMemAllocAsync *cuMemAllocAsync;
     tcuMemFreeAsync *cuMemFreeAsync;
     tcuMemcpy *cuMemcpy;
@@ -403,6 +405,8 @@ static inline int cuda_load_functions(CudaFunctions **functions, void *logctx)
     LOAD_SYMBOL(cuMemFree, tcuMemFree_v2, "cuMemFree_v2");
     LOAD_SYMBOL(cuMemHostAlloc, tcuMemHostAlloc, "cuMemHostAlloc");
     LOAD_SYMBOL(cuMemFreeHost, tcuMemFreeHost, "cuMemFreeHost");
+    LOAD_SYMBOL(cuMemHostRegister, tcuMemHostRegister_v2, "cuMemHostRegister_v2");
+    LOAD_SYMBOL(cuMemHostUnregister, tcuMemHostUnregister, "cuMemHostUnregister");
     LOAD_SYMBOL(cuMemAllocAsync, tcuMemAllocAsync, "cuMemAllocAsync");
     LOAD_SYMBOL(cuMemFreeAsync, tcuMemFreeAsync, "cuMemFreeAsync");
     LOAD_SYMBOL(cuMemcpy, tcuMemcpy, "cuMemcpy");
