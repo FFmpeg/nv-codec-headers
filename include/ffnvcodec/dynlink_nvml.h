@@ -48,6 +48,40 @@ typedef enum nvmlReturn_enum {
 
 #define NVML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE 80
 #define NVML_SYSTEM_NVML_VERSION_BUFFER_SIZE   80
+#define NVML_DEVICE_UUID_V2_BUFFER_SIZE        96
+#define NVML_DEVICE_NAME_V2_BUFFER_SIZE        96
+
+#define NVML_DEVICE_ARCH_KEPLER    2
+#define NVML_DEVICE_ARCH_MAXWELL   3
+#define NVML_DEVICE_ARCH_PASCAL    4
+#define NVML_DEVICE_ARCH_VOLTA     5
+#define NVML_DEVICE_ARCH_TURING    6
+#define NVML_DEVICE_ARCH_AMPERE    7
+#define NVML_DEVICE_ARCH_ADA       8
+#define NVML_DEVICE_ARCH_HOPPER    9
+#define NVML_DEVICE_ARCH_BLACKWELL 10
+#define NVML_DEVICE_ARCH_UNKNOWN   0xffffffff
+
+typedef struct nvmlDevice_st *nvmlDevice_t;
+typedef unsigned int nvmlDeviceArchitecture_t;
+
+typedef enum nvmlEncoderQueryType_enum {
+    NVML_ENCODER_QUERY_H264    = 0x00,
+    NVML_ENCODER_QUERY_HEVC    = 0x01,
+    NVML_ENCODER_QUERY_AV1     = 0x02,
+    NVML_ENCODER_QUERY_UNKNOWN = 0xFF
+} nvmlEncoderType_t;
+
+typedef struct nvmlEncoderSessionInfo_st {
+    unsigned int sessionId;
+    unsigned int pid;
+    unsigned int vgpuInstance;
+    nvmlEncoderType_t codecType;
+    unsigned int hResolution;
+    unsigned int vResolution;
+    unsigned int averageFps;
+    unsigned int averageLatency;
+} nvmlEncoderSessionInfo_t;
 
 typedef nvmlReturn_t tnvmlInit_v2(void);
 typedef nvmlReturn_t tnvmlInitWithFlags(unsigned int flags);
@@ -55,5 +89,15 @@ typedef nvmlReturn_t tnvmlShutdown(void);
 typedef const char *tnvmlErrorString(nvmlReturn_t result);
 typedef nvmlReturn_t tnvmlSystemGetDriverVersion(char *version, unsigned int length);
 typedef nvmlReturn_t tnvmlSystemGetNVMLVersion(char *version, unsigned int length);
+
+typedef nvmlReturn_t tnvmlDeviceGetHandleByPciBusId_v2(const char *pciBusId, nvmlDevice_t *device);
+typedef nvmlReturn_t tnvmlDeviceGetName(nvmlDevice_t device, char *name, unsigned int length);
+typedef nvmlReturn_t tnvmlDeviceGetUUID(nvmlDevice_t device, char *uuid, unsigned int length);
+typedef nvmlReturn_t tnvmlDeviceGetArchitecture(nvmlDevice_t device, nvmlDeviceArchitecture_t *arch);
+typedef nvmlReturn_t tnvmlDeviceGetCurrPcieLinkGeneration(nvmlDevice_t device, unsigned int *currLinkGen);
+typedef nvmlReturn_t tnvmlDeviceGetCurrPcieLinkWidth(nvmlDevice_t device, unsigned int *currLinkWidth);
+typedef nvmlReturn_t tnvmlDeviceGetEncoderCapacity(nvmlDevice_t device, nvmlEncoderType_t encoderQueryType, unsigned int *encoderCapacity);
+typedef nvmlReturn_t tnvmlDeviceGetEncoderSessions(nvmlDevice_t device, unsigned int *sessionCount, nvmlEncoderSessionInfo_t *sessionInfos);
+typedef nvmlReturn_t tnvmlDeviceGetEncoderUtilization(nvmlDevice_t device, unsigned int *utilization, unsigned int *samplingPeriodUs);
 
 #endif

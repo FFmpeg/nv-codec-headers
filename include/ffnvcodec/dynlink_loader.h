@@ -331,6 +331,16 @@ typedef struct NvmlFunctions {
     tnvmlSystemGetDriverVersion *nvmlSystemGetDriverVersion;
     tnvmlSystemGetNVMLVersion *nvmlSystemGetNVMLVersion;
 
+    tnvmlDeviceGetHandleByPciBusId_v2 *nvmlDeviceGetHandleByPciBusId;
+    tnvmlDeviceGetName *nvmlDeviceGetName;
+    tnvmlDeviceGetUUID *nvmlDeviceGetUUID;
+    tnvmlDeviceGetArchitecture *nvmlDeviceGetArchitecture;
+    tnvmlDeviceGetCurrPcieLinkGeneration *nvmlDeviceGetCurrPcieLinkGeneration;
+    tnvmlDeviceGetCurrPcieLinkWidth *nvmlDeviceGetCurrPcieLinkWidth;
+    tnvmlDeviceGetEncoderCapacity *nvmlDeviceGetEncoderCapacity;
+    tnvmlDeviceGetEncoderSessions *nvmlDeviceGetEncoderSessions;
+    tnvmlDeviceGetEncoderUtilization *nvmlDeviceGetEncoderUtilization;
+
     FFNV_LIB_HANDLE lib;
 } NvmlFunctions;
 #else
@@ -550,6 +560,16 @@ static inline int nvml_load_functions(NvmlFunctions **functions, void *logctx)
     LOAD_SYMBOL(nvmlErrorString, tnvmlErrorString, "nvmlErrorString");
     LOAD_SYMBOL(nvmlSystemGetDriverVersion, tnvmlSystemGetDriverVersion, "nvmlSystemGetDriverVersion");
     LOAD_SYMBOL(nvmlSystemGetNVMLVersion, tnvmlSystemGetNVMLVersion, "nvmlSystemGetNVMLVersion");
+
+    LOAD_SYMBOL(nvmlDeviceGetHandleByPciBusId, tnvmlDeviceGetHandleByPciBusId_v2, "nvmlDeviceGetHandleByPciBusId_v2");
+    LOAD_SYMBOL(nvmlDeviceGetName, tnvmlDeviceGetName, "nvmlDeviceGetName");
+    LOAD_SYMBOL(nvmlDeviceGetUUID, tnvmlDeviceGetUUID, "nvmlDeviceGetUUID");
+    LOAD_SYMBOL_OPT(nvmlDeviceGetArchitecture, tnvmlDeviceGetArchitecture, "nvmlDeviceGetArchitecture");
+    LOAD_SYMBOL(nvmlDeviceGetCurrPcieLinkGeneration, tnvmlDeviceGetCurrPcieLinkGeneration, "nvmlDeviceGetCurrPcieLinkGeneration");
+    LOAD_SYMBOL(nvmlDeviceGetCurrPcieLinkWidth, tnvmlDeviceGetCurrPcieLinkWidth, "nvmlDeviceGetCurrPcieLinkWidth");
+    LOAD_SYMBOL_OPT(nvmlDeviceGetEncoderCapacity, tnvmlDeviceGetEncoderCapacity, "nvmlDeviceGetEncoderCapacity");
+    LOAD_SYMBOL_OPT(nvmlDeviceGetEncoderSessions, tnvmlDeviceGetEncoderSessions, "nvmlDeviceGetEncoderSessions");
+    LOAD_SYMBOL(nvmlDeviceGetEncoderUtilization, tnvmlDeviceGetEncoderUtilization, "nvmlDeviceGetEncoderUtilization");
 
     GENERIC_LOAD_FUNC_FINALE(nvml);
 }
